@@ -1,16 +1,20 @@
 package com.capstone.shop.security.oauth2;
 
 import com.capstone.shop.config.AppProperties;
+import com.capstone.shop.entity.UserRefreshToken;
 import com.capstone.shop.exception.BadRequestException;
 import com.capstone.shop.entity.User;
+import com.capstone.shop.security.TokenProvider;
 import com.capstone.shop.security.UserPrincipal;
 //import com.capstone.shop.util.CookieUtils;
+import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
 import com.capstone.shop.util.CookieUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -27,9 +31,9 @@ import java.util.Optional;
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final JwtTokenUtil jwtTokenUtil;
-
+    private final TokenProvider tokenProvider;
     private final AppProperties appProperties;
-
+    private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
@@ -72,6 +76,10 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
                 .queryParam("token", token)
                 .build().toUriString();
     }
+    //토큰 리프래쉬 로직
+
+
+
 
     //인증정보 요청 내역을 쿠키에서 삭제한다.
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {

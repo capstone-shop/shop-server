@@ -1,5 +1,7 @@
 package com.capstone.shop.dto;
 
+import com.capstone.shop.entity.AuthProvider;
+import com.capstone.shop.entity.Role;
 import com.capstone.shop.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,11 @@ public class SignUpRequest {
     private String name;
     private String email;
     private String password;
+    private String address;
+    private String phoneNumber;
+    private String profileImages;
+    private AuthProvider authProvider;
+    private Role role;
 
     //    public User toEntity() {
 //        return User.builder()
@@ -26,6 +33,11 @@ public class SignUpRequest {
                 .name(user.getName())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .address(user.getAddress())
+                .phoneNumber(user.getPhoneNumber())
+                .profileImages(user.getProfileImages())
+                .authProvider(user.getAuthProvider())
+                .role(user.getRole())
                 .build();
     }
 }

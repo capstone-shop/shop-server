@@ -13,18 +13,39 @@ public class TokenProvider {
     private String secret;
     private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-
-    public String createToken(Authentication authentication) {
-
+    public String createToken(Authentication authentication, Date expiryDate) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
         // 사용자의 ID를 가져와서 토큰에담는다.
         Long userId = userPrincipal.getId();
 
         return Jwts.builder()
                 .setSubject(userId.toString())
+                .claim("role",userPrincipal.getAuthorities())
                 .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(expiryDate) // 만료 시간 설정
                 .compact();
+    }
+
+    public String createRefreshToken(Authentication authentication, Date refreshExpiry) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Long userId = userPrincipal.getId();
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(refreshExpiry) // 만료 시간 설정
+                .compact();
+    }
+
+    public Claims getExpiredTokenClaims(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            logger.info("Expired JWT token.");
+            return e.getClaims();
+        }
+        return null;
     }
 
     public Long getUserIdFromToken(String token) {

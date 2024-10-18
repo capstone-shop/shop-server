@@ -57,14 +57,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/local/redirect",
-                                "/signIn",
-                                "/signIn/**",
-                                "/signUp",
-                                "/error",
+                                "/signin",
+                                "/signup",
                                 "/favicon.ico",
-                                "/auth/**",
                                 "/oauth2/**",
-                                "/user/**"
+                                "/api/v1/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/**/*.png",

@@ -1,11 +1,10 @@
 package com.capstone.shop.util;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.Claims;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,4 +71,5 @@ public class JwtTokenUtil implements Serializable {
         final String userId = getUserIdFromToken(token);
         return (userId.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
 }

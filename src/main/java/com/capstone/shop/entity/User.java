@@ -40,16 +40,16 @@ public class User {
     @NotNull
     private String address;
 
-    @Column(name = "phone_number", length = 15) // 수정된 길이
+    @Column(name = "phone_number", length = 15)
     @Pattern(regexp = "^[0-9]{7,15}$", message = "전화번호는 7자 이상 15자 이하의 숫자만 포함해야 합니다.")
     @NotNull
-    private String phoneNumber; // 필드 이름 카멜 케이스로 변경
+    private String phoneNumber;
 
     @Column(name = "dealing_count")
-    private int dealingCount = 0; // 필드 이름 카멜 케이스로 변경
+    private int dealingCount = 0;
 
     @Column(name = "reputation")
-    private int reputation = 30; // 필드 이름 카멜 케이스로 변경
+    private int reputation = 30;
 
     @Column(name = "role", length = 20)
     @Enumerated(EnumType.STRING)
@@ -61,9 +61,9 @@ public class User {
     @NotNull
     private AuthProvider authProvider;
 
-    @Column(name = "PROFILE_IMAGE_URL", length = 512)
+    @Column(name = "profile_Images", length = 512)
     @NotNull
-    private String profileImages; // 필드 이름 카멜 케이스로 변경
+    private String profileImages;
 
     @Column(name = "CREATED_AT", updatable = false)
     @NotNull
