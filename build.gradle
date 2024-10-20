@@ -40,6 +40,13 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 }
 
+jar {
+	//~SHAPSHOT-plain.jar 파일 안 생기게 막음
+	enabled = false
+	//jar 파일 생성 경로 지정
+	destinationDirectory = file("./build/libs")
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
