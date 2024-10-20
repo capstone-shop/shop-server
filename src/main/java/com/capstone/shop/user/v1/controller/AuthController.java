@@ -1,9 +1,9 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.dto.AccessTokenResponse;
-import com.capstone.shop.dto.ApiResponse;
-import com.capstone.shop.dto.SignInRequest;
-import com.capstone.shop.dto.SignUpRequest;
+import com.capstone.shop.user.v1.dto.AccessTokenResponse;
+import com.capstone.shop.user.v1.dto.ApiResponse;
+import com.capstone.shop.user.v1.dto.SignInRequest;
+import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.exception.ResourceNotFoundException;
 import com.capstone.shop.security.CurrentUser;

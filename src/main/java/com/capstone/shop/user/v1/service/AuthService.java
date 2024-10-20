@@ -1,6 +1,6 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.dto.SignUpRequest;
+import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.entity.AuthProvider;
 import com.capstone.shop.entity.Role;
 

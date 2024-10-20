@@ -1,4 +1,4 @@
-package com.capstone.shop.dto;
+package com.capstone.shop.user.v1.dto;
 
 import com.capstone.shop.entity.AuthProvider;
 import com.capstone.shop.entity.Role;
