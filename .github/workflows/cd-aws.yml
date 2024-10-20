@@ -5,9 +5,12 @@ on:
     tags:
       - distribute
   pull_request_target:
+    types:
+      - closed
 
 jobs:
   build:
+    if: ((github.event.pull_request.merged == true) || (github.event_name == 'push'))
     runs-on: ubuntu-latest
     permissions:
       contents: read
