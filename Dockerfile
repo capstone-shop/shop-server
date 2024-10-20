@@ -29,4 +29,4 @@ COPY --from=builder-jre /jre $JAVA_HOME
 
 COPY ./build/libs/*.jar ./shop-server.jar
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=h2-server", "-Duser.timezone=Asia/Seoul", "-jar", "shop-server.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "shop-server.jar"]
