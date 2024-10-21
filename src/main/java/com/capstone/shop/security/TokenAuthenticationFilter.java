@@ -1,6 +1,7 @@
 package com.capstone.shop.security;
 
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,20 +26,45 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         try {
             String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromToken(jwt);
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (StringUtils.hasText(jwt)) {
+                if (tokenProvider.validateToken(jwt)) {
+                    Long userId = tokenProvider.getUserIdFromToken(jwt);
+                    UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    String refreshToken = getRefreshTokenFromCookie(request);
+                    if (StringUtils.hasText(refreshToken) && tokenProvider.validateRefreshToken(refreshToken)) {
+                        String newAccessToken = tokenProvider.createAccessTokenFromRefreshToken(refreshToken);
+                        response.setHeader("Authorization", "Bearer " + newAccessToken);
+                        // 여기서 새로운 Access Token으로 인증 처리
+                        Long userId = tokenProvider.getUserIdFromToken(newAccessToken);
+                        UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
         filterChain.doFilter(request, response);
+    }
+
+    private String getRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refreshToken")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     //요청보내면 body에서 검증..
