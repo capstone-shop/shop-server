@@ -31,6 +31,7 @@ public class AuthServiceImpl implements AuthService{
     private final TokenProvider tokenProvider;
     private final AppProperties appProperties;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public Map<String, String> signIn(String email, String password) {
@@ -41,21 +42,20 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        String userId = email;
         long expiry = appProperties.getAuth().getTokenExpirationMsec();
         long refreshExpiry = appProperties.getAuth().getRefreshTokenExpiry();
 
         Date now = new Date();
         Date accessTokenExpiryDate = new Date(now.getTime() + expiry);
         Date refreshTokenExpiryDate = new Date(now.getTime() + refreshExpiry);
-        Map<String, String> tokens = new HashMap<>();
+
 
         String accessToken = tokenProvider.createToken(authentication, accessTokenExpiryDate);
         String refreshToken = tokenProvider.createRefreshToken(authentication, refreshTokenExpiryDate);
+        refreshTokenService.saveRefreshToken(userId, refreshToken);
+        Map<String, String> tokens = new HashMap<>();
 
-        UserRefreshToken userRefreshToken = new UserRefreshToken();
-        userRefreshToken.setUserId(authentication.getName());
-        userRefreshToken.setRefreshToken(refreshToken);
-        userRefreshTokenRepository.save(userRefreshToken);
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
         return tokens;

@@ -1,9 +1,7 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.user.v1.dto.AccessTokenResponse;
-import com.capstone.shop.user.v1.dto.ApiResponse;
-import com.capstone.shop.user.v1.dto.SignInRequest;
-import com.capstone.shop.user.v1.dto.SignUpRequest;
+import com.capstone.shop.security.TokenProvider;
+import com.capstone.shop.user.v1.dto.*;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.exception.ResourceNotFoundException;
 import com.capstone.shop.security.CurrentUser;
@@ -11,26 +9,28 @@ import com.capstone.shop.security.UserPrincipal;
 import com.capstone.shop.user.v1.repository.UserRepository;
 import com.capstone.shop.user.v1.service.AuthServiceImpl;
 
+import com.capstone.shop.user.v1.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/user")
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final AuthServiceImpl authService;
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenService refreshTokenService;
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
         Map<String, String> tokens = authService.signIn(signInRequest.getEmail(), signInRequest.getPassword());
@@ -54,7 +54,27 @@ public class AuthController {
         // 회원 가입 성공 API 리턴
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
-    //TODO : REDIRECT 토큰을 통한 토큰 재발급, OAUTH2활성화
+    @PostMapping("/token/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        String userId = refreshTokenRequest.getUserId();
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+
+        if (refreshTokenService.verifyRefreshToken(userId, refreshToken)) {
+            String newAccessToken = tokenProvider.createAccessTokenFromRefreshToken(refreshToken);
+            return ResponseEntity.ok(new AccessTokenResponse(newAccessToken, refreshToken));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+    }
+
+    @PostMapping("/signout")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> signOut(@CurrentUser UserPrincipal userPrincipal) {
+        String userId = userPrincipal.getEmail(); // 또는 적절한 사용자 ID 가져오기 방법 사용
+        refreshTokenService.deleteRefreshToken(userId);
+        return ResponseEntity.ok(new ApiResponse(true, "User signed out successfully"));
+    }
+
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal){
