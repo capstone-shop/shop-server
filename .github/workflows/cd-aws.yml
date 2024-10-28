@@ -61,6 +61,7 @@ jobs:
             if [ ! -z "$CONTAINER_ID" ]; then
               sudo docker stop $CONTAINER_ID
               sudo docker rm $CONTAINER_ID
+              sudo docker system prune
             fi
             
             docker pull ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
