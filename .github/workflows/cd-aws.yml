@@ -49,7 +49,7 @@ jobs:
           username: '${{ secrets.EC2_SSH_USER }}'
           server: '${{ secrets.EC2_SSH_SERVER }}'
           ssh_private_key: ${{ secrets.EC2_SSH_KEY }}
-          local_path: './build/lib/*.jar'
+          local_path: './build/lib/shop-server-0.0.1-SNAPSHOT.jar'
           remote_path: '~/'
           sftpArgs: '-o ConnectTimeout=5'
 
@@ -62,4 +62,4 @@ jobs:
           script: |
             pgrep -of java | xargs kill -9 2> /dev/null
             rm server.log 2> /dev/null
-            nohup java -jar *.jar > server.log 2>&1 &
+            nohup java -jar shop-server-0.0.1-SNAPSHOT.jar > server.log 2>&1 &
