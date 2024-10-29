@@ -42,12 +42,16 @@ jobs:
           cache-encryption-key: ${{ secrets.GradleEncryptionKey }}
 
       - run: gradle build --configuration-cache -x test
-      - run: docker build -t shop-server .
-      - run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      - run: docker tag shop-server ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
 
-      - name: docker push
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
+      - name: deploy file to server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: '${{ secrets.EC2_SSH_USER }}'
+          server: '${{ secrets.EC2_SSH_SERVER }}'
+          ssh_private_key: ${{ secrets.EC2_SSH_KEY }}
+          local_path: './build/lib/*.jar'
+          remote_path: '~/'
+          sftpArgs: '-o ConnectTimeout=5'
 
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -56,13 +60,6 @@ jobs:
           username: ${{ secrets.EC2_SSH_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            CONTAINER_ID=$(sudo docker ps -q --filter "ancestor=${{ secrets.DOCKER_USERNAME }}/shop-server")
-            
-            if [ ! -z "$CONTAINER_ID" ]; then
-              sudo docker stop $CONTAINER_ID
-              sudo docker rm $CONTAINER_ID
-              sudo docker system prune
-            fi
-            
-            docker pull ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
-            nohup docker run -p 80:80 -e TZ=Asia/Seoul ${{ secrets.DOCKER_USERNAME }}/shop-server:latest > shop-server.log 2>&1 &
+            pgrep -of java | xargs kill -9 2> /dev/null
+            rm server.log 2> /dev/null
+            nohup java -jar *.jar > server.log 2>&1 &
