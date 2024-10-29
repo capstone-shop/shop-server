@@ -41,6 +41,25 @@ public class TokenProvider {
                 .compact();
     }
 
+    public String createAccessTokenFromRefreshToken(String refreshToken) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(refreshToken)
+                .getBody();
+
+        Long userId = Long.parseLong(claims.getSubject());
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 3600000); // 1시간
+
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
+
+
     public Claims getExpiredTokenClaims(String token) {
         try {
             Jwts.parser()
@@ -90,4 +109,16 @@ public class TokenProvider {
         }
         return false;
     }
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    //todo: 토큰 만료 임박 시 새로운 토큰 생성해서 새 요청시 갈아끼우기
+
 }

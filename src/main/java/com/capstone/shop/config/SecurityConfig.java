@@ -60,17 +60,21 @@ public class SecurityConfig {
                                 "/signin",
                                 "/signup",
                                 "/favicon.ico",
-                                "/oauth2/**",
-                                "/api/v1/**"
+                                "/oauth2/authorize",
+                                "/oauth2/authorization/*",
+                                "/login/oauth2/code/*",
+                                "/api/v1/**",
+                                "/static/**",
+                                "/assets/**"
                         ).permitAll()
                         .requestMatchers(
-                                "/**/*.png",
-                                "/**/*.gif",
-                                "/**/*.svg",
-                                "/**/*.jpg",
-                                "/**/*.html",
-                                "/**/*.css",
-                                "/**/*.js"
+                                "/*.png",
+                                "/*.gif",
+                                "/*.svg",
+                                "/*.jpg",
+                                "/*.html",
+                                "/*.css",
+                                "/*.js"
                         ).permitAll()
                         .anyRequest().authenticated()
                         )
