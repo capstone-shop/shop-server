@@ -1,9 +1,6 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.user.v1.dto.AccessTokenResponse;
-import com.capstone.shop.user.v1.dto.ApiResponse;
-import com.capstone.shop.user.v1.dto.SignInRequest;
-import com.capstone.shop.user.v1.dto.SignUpRequest;
+import com.capstone.shop.user.v1.dto.*;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.exception.ResourceNotFoundException;
 import com.capstone.shop.security.CurrentUser;
@@ -54,7 +51,14 @@ public class AuthController {
         // 회원 가입 성공 API 리턴
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
-    //TODO : REDIRECT 토큰을 통한 토큰 재발급, OAUTH2활성화
+    //TODO :AdditionalInfo by OAuth2 signUp
+    @PostMapping("/additional-info")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> saveAdditionalInfo(@Valid @RequestBody OAuth2AdditionalInfoRequest oAuth2AdditionalInfoRequest, UserPrincipal userPrincipal){
+        authService.saveAdditionalInfo(userPrincipal.getId(), oAuth2AdditionalInfoRequest);
+        return ResponseEntity.ok(new ApiResponse(true, "AdditionalInfo saved successfully"));
+    }
+
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal){

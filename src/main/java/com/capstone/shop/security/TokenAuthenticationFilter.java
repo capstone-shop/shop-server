@@ -30,6 +30,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
+                boolean isAdditionalInfoCompleted = tokenProvider.getAdditionalInfoCompletedFromToken(jwt);
+                if (!isAdditionalInfoCompleted) {
+                    // 추가 정보 입력이 완료되지 않은 경우 추가 정보 페이지로 리다이렉트
+                    if (!request.getRequestURI().equals("/additional-info")) { // 추가 정보 입력 페이지가 아닌 경우
+                        response.sendRedirect("/additional-info"); // 추가 정보 입력 페이지로 리다이렉트
+                        return; // 필터 체인 중단
+                    }
+                }
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
