@@ -15,12 +15,17 @@ public class TokenProvider {
 
     public String createToken(Authentication authentication, Date expiryDate) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        //isAdditionalInfoCompleted는 유저가 Oauth2 로그인 시 폰번호, 주소 등을 입력하지 않았을 시
+        //추가 정보 입력 페이지로 리다이렉트 하기 위함
+        boolean isAdditionalInfoCompleted = userPrincipal.isAdditionalInfoCompleted();
+
         // 사용자의 ID를 가져와서 토큰에담는다.
         Long userId = userPrincipal.getId();
 
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .claim("role",userPrincipal.getAuthorities())
+                .claim("isAdditionalInfoCompleted", isAdditionalInfoCompleted)
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .setExpiration(expiryDate) // 만료 시간 설정
                 .compact();
@@ -75,6 +80,15 @@ public class TokenProvider {
 
         return Long.parseLong(claims.getSubject());
     }
+    public Boolean getAdditionalInfoCompletedFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("isAdditionalInfoCompleted", Boolean.class);
+    }
+
 
     public boolean validateToken(String token) {
         try {

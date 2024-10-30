@@ -1,6 +1,9 @@
 package com.capstone.shop.user.v1.service;
 
 import com.capstone.shop.config.AppProperties;
+import com.capstone.shop.exception.ResourceNotFoundException;
+
+import com.capstone.shop.user.v1.dto.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.entity.AuthProvider;
 import com.capstone.shop.entity.Role;
@@ -61,7 +64,7 @@ public class AuthServiceImpl implements AuthService{
         return tokens;
     }
     @Override
-    public SignUpRequest signUpUser(String name, String email, String password, AuthProvider authProvider, String phoneNumber, String address, String profileImages, Role role) {
+    public SignUpRequest signUpUser(String name, String email, String password, AuthProvider authProvider, String address, String phoneNumber, String profileImages, Role role) {
         if(userRepository.existsByEmail(email)){
             throw new BadRequestException("Email address already Exist.");
         }
@@ -80,5 +83,15 @@ public class AuthServiceImpl implements AuthService{
 
         return SignUpRequest.fromEntity(savedUser);
 
+    }
+
+
+    @Override
+    public void saveAdditionalInfo(Long userId, OAuth2AdditionalInfoRequest oAuth2AdditionalInfoRequest) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        user.setAddress(oAuth2AdditionalInfoRequest.getAddress());
+        user.setPhoneNumber(oAuth2AdditionalInfoRequest.getPhoneNumber());
+
+        userRepository.save(user);
     }
 }
