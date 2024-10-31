@@ -8,7 +8,6 @@ import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.entity.AuthProvider;
 import com.capstone.shop.enums.Role;
 import com.capstone.shop.entity.User;
-import com.capstone.shop.entity.UserRefreshToken;
 import com.capstone.shop.exception.BadRequestException;
 import com.capstone.shop.security.TokenProvider;
 import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
