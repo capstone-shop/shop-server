@@ -20,9 +20,11 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     }
 
     @Override
-    public String getImageUrl() {
+    public String getProfileImages() {
+        System.out.println("debug : "+(String) attributes.get("profile_image"));
         return (String) attributes.get("profile_image");
     }
+    //response/profile_image
 
     @Override
     public String getFirstName() {

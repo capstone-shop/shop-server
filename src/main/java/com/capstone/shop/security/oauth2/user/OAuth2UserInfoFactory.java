@@ -1,6 +1,6 @@
 package com.capstone.shop.security.oauth2.user;
 
-import com.capstone.shop.entity.AuthProvider;
+import com.capstone.shop.enums.AuthProvider;
 
 import java.util.Map;
 

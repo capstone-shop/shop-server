@@ -1,5 +1,6 @@
 package com.capstone.shop.entity;
 
+import com.capstone.shop.enums.PictureType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

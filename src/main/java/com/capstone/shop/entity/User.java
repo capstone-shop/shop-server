@@ -1,5 +1,7 @@
 package com.capstone.shop.entity;
 
+import com.capstone.shop.enums.AuthProvider;
+import com.capstone.shop.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -54,7 +56,7 @@ public class User {
     @Column(name = "role", length = 20)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Role role;
+    private Role role = Role.USER;
 
     @Column(name = "auth_provider", length = 20)
     @Enumerated(EnumType.STRING)
@@ -72,6 +74,9 @@ public class User {
     @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private UserRefreshToken userRefreshToken;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(); // 생성 시 현재 시간으로 설정
@@ -87,9 +92,11 @@ public class User {
             @NotNull @Size(max = 12) String name,
             @NotNull @Size(max = 100) String email,
             @NotNull AuthProvider authProvider
+            //@NotNull Role role
     ) {
         this.name = name;
         this.password = "NO_PASS"; //소셜로그인은 패스워드가 없음
         this.email = email != null ? email : "NO_EMAIL";
+        this.authProvider = authProvider;
     }
 }
