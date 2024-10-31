@@ -56,16 +56,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/",
-                                "/local/redirect",
-                                "/signin",
-                                "/signup",
-                                "/favicon.ico",
-                                "/oauth2/authorize",
-                                "/oauth2/authorization/*",
-                                "/login/oauth2/code/*",
-                                "/api/v1/**",
-                                "/static/**",
-                                "/assets/**"
+                                "local/redirect",
+                                "signin",
+                                "signup",
+                                "favicon.ico",
+                                "oauth2/authorize",
+                                "oauth2/authorization/*",
+                                "login/oauth2/code/*",
+                                "api/v1/**",
+                                "static/**",
+                                "assets/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/*.png",
