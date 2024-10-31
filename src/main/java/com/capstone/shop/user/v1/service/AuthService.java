@@ -3,7 +3,7 @@ package com.capstone.shop.user.v1.service;
 import com.capstone.shop.user.v1.dto.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.entity.AuthProvider;
-import com.capstone.shop.entity.Role;
+import com.capstone.shop.enums.Role;
 
 import java.util.Map;
 

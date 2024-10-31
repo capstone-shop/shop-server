@@ -6,7 +6,7 @@ import com.capstone.shop.exception.ResourceNotFoundException;
 import com.capstone.shop.user.v1.dto.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.entity.AuthProvider;
-import com.capstone.shop.entity.Role;
+import com.capstone.shop.enums.Role;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.entity.UserRefreshToken;
 import com.capstone.shop.exception.BadRequestException;
