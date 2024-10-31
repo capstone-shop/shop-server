@@ -3,12 +3,12 @@ package com.capstone.shop.user.v1.service;
 import com.capstone.shop.config.AppProperties;
 import com.capstone.shop.exception.ResourceNotFoundException;
 
+import com.capstone.shop.security.UserPrincipal;
 import com.capstone.shop.user.v1.dto.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
-import com.capstone.shop.entity.AuthProvider;
-import com.capstone.shop.entity.Role;
+import com.capstone.shop.enums.AuthProvider;
+import com.capstone.shop.enums.Role;
 import com.capstone.shop.entity.User;
-import com.capstone.shop.entity.UserRefreshToken;
 import com.capstone.shop.exception.BadRequestException;
 import com.capstone.shop.security.TokenProvider;
 import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
@@ -45,7 +45,10 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String userId = email;
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Long userId = userPrincipal.getId();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("User not found with ID: " + userId));
         long expiry = appProperties.getAuth().getTokenExpirationMsec();
         long refreshExpiry = appProperties.getAuth().getRefreshTokenExpiry();
 
@@ -56,7 +59,7 @@ public class AuthServiceImpl implements AuthService{
 
         String accessToken = tokenProvider.createToken(authentication, accessTokenExpiryDate);
         String refreshToken = tokenProvider.createRefreshToken(authentication, refreshTokenExpiryDate);
-        refreshTokenService.saveRefreshToken(userId, refreshToken);
+        refreshTokenService.saveRefreshToken(user, refreshToken);
         Map<String, String> tokens = new HashMap<>();
 
         tokens.put("accessToken", accessToken);

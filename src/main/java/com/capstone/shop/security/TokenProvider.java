@@ -40,7 +40,16 @@ public class TokenProvider {
                 .setExpiration(refreshExpiry) // 만료 시간 설정
                 .compact();
     }
-
+    public String createNewRefreshToken(Long userId) {
+        Date now = new Date();
+        Date refreshExpiry = new Date(now.getTime() + 604800000L); // 7일
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .setIssuedAt(now)
+                .setExpiration(refreshExpiry)
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
     public String createAccessTokenFromRefreshToken(String refreshToken) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)

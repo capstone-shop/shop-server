@@ -4,6 +4,8 @@ import com.capstone.shop.entity.UserRefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRefreshTokenRepository extends JpaRepository<UserRefreshToken, Long> {
-    UserRefreshToken findByUserId(String userId);
-    UserRefreshToken findByUserIdAndRefreshToken(String userId, String refreshToken);
+    UserRefreshToken findByUserEmail(String userEmail);
+
+    UserRefreshToken findByUserId(Long id);
+    UserRefreshToken findByUserIdAndRefreshToken(Long userId, String refreshToken);
 }

@@ -1,8 +1,8 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.user.v1.dto.MerchandisePaginationResponse;
-import com.capstone.shop.user.v1.dto.MerchandiseRegisterRequest;
-import com.capstone.shop.user.v1.dto.MerchandiseResponse;
+import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandisePaginationResponse;
+import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
+import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
 import com.capstone.shop.user.v1.dto.PaginationResponse;
 import com.capstone.shop.user.v1.service.MerchandiseService;
 import com.capstone.shop.entity.Merchandise;
