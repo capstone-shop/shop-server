@@ -1,5 +1,6 @@
 package com.capstone.shop.entity;
 
+import com.capstone.shop.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -8,7 +9,6 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "user")
-public class User {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -64,24 +64,6 @@ public class User {
     @Column(name = "profile_Images", length = 512)
     @NotNull
     private String profileImages;
-
-    @Column(name = "CREATED_AT", updatable = false)
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @Column(name = "MODIFIED_AT")
-    private LocalDateTime modifiedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now(); // 생성 시 현재 시간으로 설정
-        this.modifiedAt = LocalDateTime.now(); // 생성 시 현재 시간으로 설정
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.modifiedAt = LocalDateTime.now(); // 수정 시 현재 시간으로 업데이트
-    }
 
     public User(
             @NotNull @Size(max = 12) String name,

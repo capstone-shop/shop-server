@@ -1,9 +1,9 @@
-package com.capstone.shop.user.v1.dto;
+package com.capstone.shop.user.v1.controller.dto.merchandise;
 
+import com.capstone.shop.user.v1.dto.PaginationResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 @Getter

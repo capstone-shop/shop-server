@@ -1,7 +1,7 @@
 package com.capstone.shop.user.v1.dto;
 
 import com.capstone.shop.entity.AuthProvider;
-import com.capstone.shop.entity.Role;
+import com.capstone.shop.enums.Role;
 import com.capstone.shop.entity.User;
 import lombok.Builder;
 import lombok.Getter;

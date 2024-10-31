@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -55,6 +56,7 @@ class MerchandiseControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testGetMerchandise() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/merchandise")
                         .param("page", "0")
