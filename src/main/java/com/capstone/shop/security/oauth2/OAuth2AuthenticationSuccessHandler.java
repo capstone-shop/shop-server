@@ -1,4 +1,5 @@
 package com.capstone.shop.security.oauth2;
+import java.util.Date;
 
 import com.capstone.shop.config.AppProperties;
 import com.capstone.shop.entity.UserRefreshToken;
@@ -8,6 +9,8 @@ import com.capstone.shop.security.TokenProvider;
 import com.capstone.shop.security.UserPrincipal;
 //import com.capstone.shop.util.CookieUtils;
 import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
+import com.capstone.shop.user.v1.repository.UserRepository;
+import com.capstone.shop.user.v1.service.RefreshTokenService;
 import com.capstone.shop.util.CookieUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import org.antlr.v4.runtime.Token;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,34 +39,44 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
     private final AppProperties appProperties;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
 
 
     //oauth2인증이 성공적으로 이뤄졌을 때 실행된다
     //token을 포함한 uri을 생성 후 인증요청 쿠키를 비워주고 redirect 한다.
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        //String targetUrl = determineTargetUrl(request, response, authentication);
-        //String targetUrl = "http://localhost:3000/";
-        String Uri = "http://localhost:3000/oauth2/redirect";
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(Uri);
-        Long userId = ((UserPrincipal)authentication.getPrincipal()).getId();
+        String targetUrl = determineTargetUrl(request, response, authentication);
 
-        String token = jwtTokenUtil.generateToken(userId);
+        // 리다이렉트할 URI 구성 (예: 프론트엔드 URI)
+        String frontEndUri = "http://localhost:3000/oauth2/redirect";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(frontEndUri);
 
-        builder.queryParam("token", token);
+        // 기존 targetUrl에서 쿼리 파라미터로 토큰 추가
+        String token = extractTokenFromTargetUrl(targetUrl); // targetUrl에서 토큰을 추출하는 메서드 필요
+        if (token != null) {
+            builder.queryParam("token", token);
+        }
 
-        String targetUrl = builder.build().toUriString();
+        String finalRedirectUrl = builder.build().toUriString();
 
+        // 응답이 이미 커밋되었는지 확인
         if (response.isCommitted()) {
-            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            logger.debug("Response has already been committed. Unable to redirect to " + finalRedirectUrl);
             return;
         }
-        clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
-    }
 
+        // 인증 속성 제거 및 리다이렉트
+        clearAuthenticationAttributes(request, response);
+        getRedirectStrategy().sendRedirect(request, response, finalRedirectUrl);
+    }
+    private String extractTokenFromTargetUrl(String targetUrl) {
+        // URL 파라미터에서 토큰 추출 로직 구현
+        UriComponents uriComponents = UriComponentsBuilder.fromUriString(targetUrl).build();
+        return uriComponents.getQueryParams().getFirst("token");
+    }
     //token을 생성하고 이를 포함한 프론트엔드로의 uri를 생성한다.
-    //아니 redirect URI 왜 안되냐고?????????????????????????????? <<< 이제돼ㅑ씅ㅁ
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
@@ -71,12 +85,23 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
         Long userId = ((UserPrincipal)authentication.getPrincipal()).getId();
-        String token = jwtTokenUtil.generateToken(userId);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("User not found with ID: " + userId));
+        Date now = new Date();
+        long expiry = appProperties.getAuth().getTokenExpirationMsec();
+        long refreshExpiry = appProperties.getAuth().getRefreshTokenExpiry();
+        Date accessTokenExpiryDate = new Date(now.getTime() + expiry);
+        Date refreshTokenExpiryDate = new Date(now.getTime() + refreshExpiry);
+
+        String accessToken = tokenProvider.createToken(authentication, accessTokenExpiryDate);
+        String refreshToken = tokenProvider.createRefreshToken(authentication, refreshTokenExpiryDate);
+        refreshTokenService.saveRefreshToken(user, refreshToken);
+
+
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("token", accessToken)
                 .build().toUriString();
     }
-    //토큰 리프래쉬 로직
 
 
 
