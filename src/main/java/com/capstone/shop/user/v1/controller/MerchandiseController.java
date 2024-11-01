@@ -1,9 +1,9 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandisePaginationResponse;
+import com.capstone.shop.user.v1.controller.dto.ListAndPaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
-import com.capstone.shop.user.v1.dto.PaginationResponse;
+import com.capstone.shop.user.v1.controller.dto.PaginationResponse;
 import com.capstone.shop.user.v1.service.MerchandiseService;
 import com.capstone.shop.entity.Merchandise;
 import java.util.List;
@@ -27,7 +27,7 @@ public class MerchandiseController {
     private final MerchandiseService merchandiseService;
 
     @GetMapping
-    public MerchandisePaginationResponse getMerchandise(
+    public ListAndPaginationResponse<MerchandiseResponse> getMerchandise(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
             @RequestParam(value = "sort", defaultValue = "like,desc", required = false) String sort,
@@ -44,7 +44,7 @@ public class MerchandiseController {
         List<MerchandiseResponse> merchandiseList = MerchandiseResponse.getMerchandiseResponses(merchandisePage);
         PaginationResponse pagination = new PaginationResponse(page, size, sort, search, merchandisePage);
 
-        return new MerchandisePaginationResponse(merchandiseList, pagination);
+        return new ListAndPaginationResponse<>(merchandiseList, pagination);
     }
 
     @PostMapping

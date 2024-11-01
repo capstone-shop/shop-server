@@ -1,6 +1,5 @@
-package com.capstone.shop.user.v1.dto;
+package com.capstone.shop.user.v1.controller.dto;
 
-import com.capstone.shop.entity.Merchandise;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class PaginationResponse {
     private boolean last;
     private boolean first;
 
-    public PaginationResponse(int page, int size, String sort, String search, Page<Merchandise> merchandisePage) {
+    public PaginationResponse(int page, int size, String sort, String search, Page<?> merchandisePage) {
         this.page = page;
         this.totalPages = merchandisePage.getTotalPages();
         this.requestSize = size;
