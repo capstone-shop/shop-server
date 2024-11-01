@@ -6,6 +6,8 @@ import com.capstone.shop.security.TokenAuthenticationFilter;
 import com.capstone.shop.security.TokenProvider;
 import com.capstone.shop.security.oauth2.CustomOAuth2UserService;
 import com.capstone.shop.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
+import com.capstone.shop.user.v1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,9 +39,11 @@ public class SecurityConfig {
 
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final UserRefreshTokenRepository userRefreshTokenRepository;
+    private final UserRepository userRepository;
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider, customUserDetailsService);
+        return new TokenAuthenticationFilter(tokenProvider, customUserDetailsService, userRefreshTokenRepository,userRepository);
     }
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
@@ -77,7 +81,7 @@ public class SecurityConfig {
                                 "/*.js"
                         ).permitAll()
                         .anyRequest().authenticated()
-                        )
+                )
 
                 .oauth2Login(oauth2Login ->
                         oauth2Login

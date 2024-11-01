@@ -1,7 +1,7 @@
 package com.capstone.shop.security.oauth2;
 
 import com.capstone.shop.exception.OAuthProviderMissMatchException;
-import com.capstone.shop.entity.AuthProvider;
+import com.capstone.shop.enums.AuthProvider;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.user.v1.repository.UserRepository;
 import com.capstone.shop.security.UserPrincipal;
@@ -40,8 +40,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
         AuthProvider authProvider = AuthProvider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
-
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(authProvider, user.getAttributes());
+        //debug
+        System.out.println("User Info: " + userInfo);
+        System.out.println("Profile Image: " + userInfo.getProfileImages());
+
         Optional<User> optionalUser = userRepository.findByEmail(userInfo.getEmail());
         User savedUser = optionalUser.orElse(null);
         //TODO: 예외처리
@@ -77,10 +80,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setName(userInfo.getName());
         }
 
-        if (userInfo.getImageUrl() != null && !user.getProfileImages().equals(userInfo.getImageUrl())) {
-            user.setProfileImages(userInfo.getImageUrl());
+        if (userInfo.getProfileImages() != null) {
+            user.setProfileImages(userInfo.getProfileImages());
         }
 
-        return user;
+        return userRepository.save(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.capstone.shop.entity;
 
+import com.capstone.shop.enums.AuthProvider;
 import com.capstone.shop.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -54,7 +55,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "role", length = 20)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Role role;
+    private Role role = Role.USER;
 
     @Column(name = "auth_provider", length = 20)
     @Enumerated(EnumType.STRING)
@@ -65,13 +66,20 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String profileImages;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private UserRefreshToken userRefreshToken;
+
+
+
     public User(
             @NotNull @Size(max = 12) String name,
             @NotNull @Size(max = 100) String email,
             @NotNull AuthProvider authProvider
+            //@NotNull Role role
     ) {
         this.name = name;
         this.password = "NO_PASS"; //소셜로그인은 패스워드가 없음
         this.email = email != null ? email : "NO_EMAIL";
+        this.authProvider = authProvider;
     }
 }

@@ -46,11 +46,11 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    //generate token for user (토큰 생성)
-    public String generateToken(Long userId) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userId.toString());
-    }
+    //generate token for user (토큰 생성) 이건 로컬 auth와 같은 로직으로 사용하기로 했음. 241030
+//    public String generateToken(Long userId) {
+//        Map<String, Object> claims = new HashMap<>();
+//        return doGenerateToken(claims, userId.toString());
+//    }
 
     //while creating the token - (토큰에 정보를 넣고, 시크릿 키를 이용해서 토큰을 compact하게 만든다)
     //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
