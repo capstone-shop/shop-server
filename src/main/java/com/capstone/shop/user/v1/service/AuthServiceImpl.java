@@ -79,9 +79,9 @@ public class AuthServiceImpl implements AuthService{
                 .password(passwordEncoder.encode(password))
                 .address(address) // 주소 필드 추가
                 .phoneNumber(phoneNumber) // 전화번호 필드 추가
-                .authProvider(authProvider) // authProvider 필드 추가
+                .authProvider(AuthProvider.local) // authProvider 필드 추가
                 .profileImages(profileImages) // 프로필 이미지 필드 추가
-                .role(role) // 역할 필드 추가
+                .role(Role.USER) // 역할 필드 추가
                 .build();
         User savedUser = userRepository.save(user);
 

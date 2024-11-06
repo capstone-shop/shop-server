@@ -15,7 +15,7 @@ public class SignUpRequest {
     private String email;
     private String password;
     private String address;
-    private String phoneNumber;
+    private String phone_number;
     private String profileImages;
     private AuthProvider authProvider;
     private Role role;
@@ -34,7 +34,7 @@ public class SignUpRequest {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .address(user.getAddress())
-                .phoneNumber(user.getPhoneNumber())
+                .phone_number(user.getPhoneNumber())
                 .profileImages(user.getProfileImages())
                 .authProvider(user.getAuthProvider())
                 .role(user.getRole())

@@ -80,4 +80,4 @@ jobs:
             fi
             
             docker pull ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
-            nohup docker run -p 80:80 -e TZ=Asia/Seoul --network host ${{ secrets.DOCKER_USERNAME }}/shop-server:latest > shop-server.log 2>&1 &
+            nohup docker run -p 8080:8080 -e TZ=Asia/Seoul --network host ${{ secrets.DOCKER_USERNAME }}/shop-server:latest > shop-server.log 2>&1 &

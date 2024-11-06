@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ap1/v1/user")
+@RequestMapping("/api/v1/user")
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -42,7 +42,7 @@ public class AuthController {
                 signUpRequest.getPassword(),
                 signUpRequest.getAuthProvider(),
                 signUpRequest.getAddress(),
-                signUpRequest.getPhoneNumber(),
+                signUpRequest.getPhone_number(), //이거 언더바 쓴 이유는 json이랑 통일하기 위해서
                 signUpRequest.getProfileImages(),
                 signUpRequest.getRole()
         );
