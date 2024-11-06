@@ -18,14 +18,14 @@ public class PaginationResponse {
     private boolean last;
     private boolean first;
 
-    public PaginationResponse(int page, int size, String sort, String search, Page<?> merchandisePage) {
+    public PaginationResponse(int page, int size, String sort, String search, Page<?> entityPage) {
         this.page = page;
-        this.totalPages = merchandisePage.getTotalPages();
+        this.totalPages = entityPage.getTotalPages();
         this.requestSize = size;
-        this.responseSize = merchandisePage.getNumberOfElements();
+        this.responseSize = entityPage.getNumberOfElements();
         this.sort = sort;
         this.search = search;
-        this.first = merchandisePage.isFirst();
-        this.last = merchandisePage.isLast();
+        this.first = entityPage.isFirst();
+        this.last = entityPage.isLast();
     }
 }
