@@ -31,6 +31,6 @@ public class Category {
     @OneToMany(mappedBy = "parent", cascade= CascadeType.ALL, orphanRemoval = true)
     private List<Category> children = new ArrayList<>();
 
-    @OneToMany(mappedBy = "category_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Merchandise> merchandiseList = new ArrayList<>();
 }
