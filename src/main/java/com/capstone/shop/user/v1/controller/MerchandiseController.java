@@ -39,12 +39,7 @@ public class MerchandiseController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
 
-        Page<Merchandise> merchandisePage = merchandiseService.getMerchandise(search, pageable);
-
-        List<MerchandiseResponse> merchandiseList = MerchandiseResponse.getMerchandiseResponses(merchandisePage);
-        PaginationResponse pagination = new PaginationResponse(page, size, sort, search, merchandisePage);
-
-        return new MerchandiseListAndPaginationResponse(merchandiseList, pagination);
+        return merchandiseService.getMerchandise(sort, search, pageable);
     }
 
     @PostMapping
