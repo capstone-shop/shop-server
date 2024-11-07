@@ -1,15 +1,16 @@
 package com.capstone.shop.entity;
 
-
+import com.capstone.shop.enums.MerchandiseState;
+import com.capstone.shop.enums.TransactionMethod;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,22 +27,46 @@ public class Merchandise extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @ManyToOne
+    @JoinColumn(name = "register_id", nullable = false)
+    private User register; // 등록자 User 객체와 연결
+
+    @Column(columnDefinition = "TEXT")
+    private String description; // 상품 설명
+
+    @Column(nullable = false)
     private int price;
 
-    @Column
-    private String location;
-
-    @Column(name = "like_count") //sql 의 like 문과 충돌 발생해서 like_count 로 컬럼 생성
-    private int like;
-
-    @Column
-    private String imageUrls;
-
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MerchandiseState state; // 상품 상태 (판매, 예약, 판매완료)
+
+    @Column(name = "image_urls")
+    private String imageUrls; // 이미지 URL (;로 구분)
+
+    @Column(nullable = false)
+    private int view; // 조회수
+
+    @Column(nullable = false)
+    private int wish; // 찜 횟수
+
+    @Column(nullable = false)
+    private int chat; // 대화 횟수
+
+    @Column(nullable = false)
+    private String location; // 판매 지역
+
+    @Column(name = "negotiation_available", nullable = false)
+    private boolean negotiationAvailable; // 가격 협상 가능 여부
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "transaction_method", nullable = false)
+    private TransactionMethod transactionMethod; // 거래 방식 (직거래, 택배, 둘 다 가능)
 }
