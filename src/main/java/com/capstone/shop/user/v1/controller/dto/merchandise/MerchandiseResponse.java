@@ -1,6 +1,5 @@
 package com.capstone.shop.user.v1.controller.dto.merchandise;
 
-import com.capstone.shop.entity.Image;
 import com.capstone.shop.entity.Merchandise;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ public class MerchandiseResponse {
     private int price;
     private String location;
     private int like;
-    private List<String> images;
+    private String images;
 
     public MerchandiseResponse(Merchandise entity) {
         this.id = entity.getId();
@@ -25,10 +24,7 @@ public class MerchandiseResponse {
         this.price = entity.getPrice();
         this.location = entity.getLocation();
         this.like = entity.getLike();
-        this.images = entity.getImages()
-                .stream()
-                .map(Image::getPictureUrl)
-                .toList();
+        this.images = entity.getImageUrls();
     }
 
     public static List<MerchandiseResponse> getMerchandiseResponses(Page<Merchandise> merchandisePage) {
