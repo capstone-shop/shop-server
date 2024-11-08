@@ -6,8 +6,11 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPa
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
 import com.capstone.shop.user.v1.repository.MerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
+import com.capstone.shop.user.v1.repository.MerchandiseSpec;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,11 +22,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
     public MerchandiseListAndPaginationResponse getMerchandise(String sort, String search, Pageable pageable) {
         var result = merchandiseRepository.findByNameContaining(search, pageable);
 
-        var merchandiseList = result
-                .getContent()
-                .stream()
-                .map(MerchandiseResponse::new)
-                .toList();
+        var merchandiseList = MerchandiseResponse.entityPageToDtoList(result);
 
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
@@ -39,18 +38,21 @@ public class MerchandiseServiceImpl implements MerchandiseService {
     }
 
     @Override
-    public HomeMerchandiseList getRecentlyViewedAndRecentlyRegisteredMerchandise() {
-        var recentlyRegistered = merchandiseRepository.findTop3ByOrderByCreatedAtDesc();
-        var recentlyViewed = merchandiseRepository.findTop3ByOrderByModifiedAtDesc();
+    public HomeMerchandiseList getHomeMerchandiseList() {
+        var spec = MerchandiseSpec
+                .builder()
+                .isOnSale()
+                .isRegisteredInLast2Weeks()
+                .build();
 
-        var recentlyRegisteredList = recentlyRegistered
-                .stream()
-                .map(MerchandiseResponse::new)
-                .toList();
-        var recentlyViewedList = recentlyViewed
-                .stream()
-                .map(MerchandiseResponse::new)
-                .toList();
+        var top3OrderByCreatedAt = PageRequest.of(0, 3, Direction.DESC, "createdAt");
+        var top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "view");
+
+        var recentlyRegistered = merchandiseRepository.findAll(spec, top3OrderByCreatedAt);
+        var recentlyViewed = merchandiseRepository.findAll(spec, top3OrderByView);
+
+        var recentlyRegisteredList = MerchandiseResponse.entityPageToDtoList(recentlyRegistered);
+        var recentlyViewedList = MerchandiseResponse.entityPageToDtoList(recentlyViewed);
 
         return new HomeMerchandiseList(recentlyRegisteredList, recentlyViewedList);
     }

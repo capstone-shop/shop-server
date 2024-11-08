@@ -1,5 +1,5 @@
 package com.capstone.shop.enums;
 
-public enum MerchandiseState {
+public enum MerchandiseSaleState {
     SALE, RESERVED, SOLD
 }
