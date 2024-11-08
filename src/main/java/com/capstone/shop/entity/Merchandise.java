@@ -1,6 +1,7 @@
 package com.capstone.shop.entity;
 
-import com.capstone.shop.enums.MerchandiseState;
+import com.capstone.shop.enums.MerchandiseQualityState;
+import com.capstone.shop.enums.MerchandiseSaleState;
 import com.capstone.shop.enums.TransactionMethod;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +47,11 @@ public class Merchandise extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MerchandiseState state; // 상품 상태 (판매, 예약, 판매완료)
+    private MerchandiseSaleState saleState; // 판매 여부 (판매, 예약, 판매완료)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MerchandiseQualityState merchandiseState; // 상품 상태 (NEW, GOOD, AVERAGE, BAD, BROKEN)
 
     @Column(name = "image_urls")
     private String imageUrls; // 이미지 URL (;로 구분)

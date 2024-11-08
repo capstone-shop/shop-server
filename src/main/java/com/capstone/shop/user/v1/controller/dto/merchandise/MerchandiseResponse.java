@@ -1,6 +1,8 @@
 package com.capstone.shop.user.v1.controller.dto.merchandise;
 
 import com.capstone.shop.entity.Merchandise;
+import com.capstone.shop.enums.MerchandiseQualityState;
+import com.capstone.shop.enums.MerchandiseSaleState;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,10 @@ public class MerchandiseResponse {
     private String description;
     private int price;
     private String location;
+    private String category;
+    private String register;
+    private MerchandiseSaleState saleState;
+    private MerchandiseQualityState merchandiseState;
     private boolean negotiationAvailable;
     private String transactionMethod;
     private int view;
@@ -31,6 +37,10 @@ public class MerchandiseResponse {
         this.description = entity.getDescription();
         this.price = entity.getPrice();
         this.location = entity.getLocation();
+        this.category = entity.getCategory().getTitle();
+        this.register = entity.getRegister().getName();
+        this.saleState = entity.getSaleState();
+        this.merchandiseState = entity.getMerchandiseState();
         this.negotiationAvailable = entity.isNegotiationAvailable();
         this.transactionMethod = entity.getTransactionMethod().name();
         this.view = entity.getView();
@@ -40,9 +50,12 @@ public class MerchandiseResponse {
         this.createdAt = entity.getCreatedAt();
     }
 
-    public static List<MerchandiseResponse> getMerchandiseResponses(Page<Merchandise> merchandisePage) {
+    public static List<MerchandiseResponse> entityPageToDtoList(Page<Merchandise> merchandisePage) {
+        return entityListToDtoList(merchandisePage.getContent());
+    }
+
+    public static List<MerchandiseResponse> entityListToDtoList(List<Merchandise> merchandisePage) {
         return merchandisePage
-                .getContent()
                 .stream()
                 .map(MerchandiseResponse::new)
                 .toList();

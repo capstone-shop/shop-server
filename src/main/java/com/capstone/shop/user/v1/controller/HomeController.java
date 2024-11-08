@@ -1,6 +1,5 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
 import com.capstone.shop.user.v1.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,6 @@ public class HomeController {
 
     @GetMapping("/merchandise")
     public HomeMerchandiseList getMerchandise() {
-        return merchandiseService.getRecentlyViewedAndRecentlyRegisteredMerchandise();
+        return merchandiseService.getHomeMerchandiseList();
     }
 }
