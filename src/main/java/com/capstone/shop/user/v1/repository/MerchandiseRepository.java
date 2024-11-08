@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MerchandiseRepository extends JpaRepository<Merchandise, Long>, JpaSpecificationExecutor<Merchandise> {
     Page<Merchandise> findByNameContaining(String search, Pageable pageable);
-
-    List<Merchandise> findTop3ByOrderByCreatedAtDesc(Specification<Merchandise> specification);
-
-    List<Merchandise> findTop3ByOrderByViewDesc(Specification<Merchandise> specification);
+    @Override
+    Page<Merchandise> findAll(Specification<Merchandise> specification, Pageable pageable);
 }

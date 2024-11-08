@@ -8,8 +8,9 @@ import com.capstone.shop.user.v1.repository.MerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.repository.MerchandiseSpec;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,11 +45,14 @@ public class MerchandiseServiceImpl implements MerchandiseService {
                 .isRegisteredInLast2Weeks()
                 .build();
 
-        var recentlyRegistered = merchandiseRepository.findTop3ByOrderByCreatedAtDesc(spec);
-        var recentlyViewed = merchandiseRepository.findTop3ByOrderByViewDesc(spec);
+        var top3OrderByCreatedAt = PageRequest.of(0, 3, Direction.DESC, "createdAt");
+        var top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "view");
 
-        var recentlyRegisteredList = MerchandiseResponse.entityListToDtoList(recentlyRegistered);
-        var recentlyViewedList = MerchandiseResponse.entityListToDtoList(recentlyViewed);
+        var recentlyRegistered = merchandiseRepository.findAll(spec, top3OrderByCreatedAt);
+        var recentlyViewed = merchandiseRepository.findAll(spec, top3OrderByView);
+
+        var recentlyRegisteredList = MerchandiseResponse.entityPageToDtoList(recentlyRegistered);
+        var recentlyViewedList = MerchandiseResponse.entityPageToDtoList(recentlyViewed);
 
         return new HomeMerchandiseList(recentlyRegisteredList, recentlyViewedList);
     }
