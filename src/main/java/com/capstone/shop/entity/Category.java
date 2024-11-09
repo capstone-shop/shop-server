@@ -15,14 +15,23 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Category {
+public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private boolean isLeaf;
+
+    @Column(nullable = false)
+    private Integer sequence;
+
+    @ManyToOne
+    @JoinColumn(name = "register_id", nullable = false)
+    private User register;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
