@@ -2,13 +2,8 @@ package com.capstone.shop.user.v1.controller;
 
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
-import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
-import com.capstone.shop.user.v1.controller.dto.PaginationResponse;
 import com.capstone.shop.user.v1.service.MerchandiseService;
-import com.capstone.shop.entity.Merchandise;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/merchandise")
-public class MerchandiseController {
+public class UserWebMerchandiseController {
     private final MerchandiseService merchandiseService;
 
     @GetMapping
