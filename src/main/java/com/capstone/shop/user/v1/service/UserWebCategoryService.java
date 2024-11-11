@@ -5,5 +5,6 @@ import java.util.List;
 
 public interface UserWebCategoryService {
 
-    List<UserWebCategoryResponse> getUserWebCategory();
+    List<UserWebCategoryResponse> getCategory();
+    List<UserWebCategoryResponse> getCategory(long categoryId);
 }
