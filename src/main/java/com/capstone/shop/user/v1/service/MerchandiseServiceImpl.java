@@ -7,6 +7,7 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
 import com.capstone.shop.user.v1.repository.MerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.repository.MerchandiseSpec;
+import com.capstone.shop.user.v1.util.Filter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,8 +23,14 @@ public class MerchandiseServiceImpl implements MerchandiseService {
     private final MerchandiseRepository merchandiseRepository;
 
     @Override
-    public MerchandiseListAndPaginationResponse getMerchandise(String sort, String search, Pageable pageable) {
-        Page<Merchandise> result = merchandiseRepository.findByNameContaining(search, pageable);
+    public MerchandiseListAndPaginationResponse getMerchandise(String sort, String search, Pageable pageable,
+            Filter filter) {
+        Specification<Merchandise> spec = MerchandiseSpec
+                .builder()
+                .addFilterCriteria(filter)
+                .build();
+
+        Page<Merchandise> result = merchandiseRepository.findAll(spec, pageable);
 
         List<MerchandiseResponse> merchandiseList = MerchandiseResponse.entityPageToDtoList(result);
 

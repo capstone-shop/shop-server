@@ -3,6 +3,7 @@ package com.capstone.shop.user.v1.controller;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
 import com.capstone.shop.user.v1.service.MerchandiseService;
+import com.capstone.shop.user.v1.util.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +26,19 @@ public class UserWebMerchandiseController {
     public MerchandiseListAndPaginationResponse getMerchandise(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
-            @RequestParam(value = "sort", defaultValue = "like,desc", required = false) String sort,
-            @RequestParam(value = "search", defaultValue = "", required = false) String search) {
+            @RequestParam(value = "sort", defaultValue = "wish,desc", required = false) String sort,
+            @RequestParam(value = "search", defaultValue = "", required = false) String search,
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter) {
 
         String[] sortParams = sort.split(",");
         String sortField = sortParams[0];
         Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
 
+        Filter filterObj = new Filter(filter);
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
 
-        return merchandiseService.getMerchandise(sort, search, pageable);
+        return merchandiseService.getMerchandise(sort, search, pageable, filterObj);
     }
 
     @PostMapping
