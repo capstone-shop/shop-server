@@ -6,7 +6,7 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPa
 import com.capstone.shop.user.v1.util.Filter;
 import org.springframework.data.domain.Pageable;
 
-public interface MerchandiseService {
+public interface UserWebMerchandiseService {
 
     MerchandiseListAndPaginationResponse getMerchandise(String sort, String search, Pageable pageable, Filter filter);
 

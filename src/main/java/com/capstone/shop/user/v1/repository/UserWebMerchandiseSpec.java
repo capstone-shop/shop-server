@@ -12,27 +12,27 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.domain.Specification;
 
-public class MerchandiseSpec {
+public class UserWebMerchandiseSpec {
 
     private Specification<Merchandise> spec;
 
-    private MerchandiseSpec() {
+    private UserWebMerchandiseSpec() {
         spec = (root, query, builder) -> null;
     }
 
-    public MerchandiseSpec isOnSale() {
+    public UserWebMerchandiseSpec isOnSale() {
         spec = spec.and((root, query, builder) -> builder.equal(root.get("saleState"), "SALE"));
         return this;
     }
 
-    public MerchandiseSpec isRegisteredInLast2Weeks() {
+    public UserWebMerchandiseSpec isRegisteredInLast2Weeks() {
         LocalDate localDate = LocalDate.now().minusWeeks(2);
         Date date = new Date(localDate.toEpochDay());
         spec = spec.and(((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("createdAt"), date)));
         return this;
     }
 
-    public MerchandiseSpec addFilterCriteria(Filter filter) {
+    public UserWebMerchandiseSpec addFilterCriteria(Filter filter) {
         for (FilterType filterType : FilterType.values()) {
             List<FilterOption> options = filter.getFilterOptions(filterType);
             spec = spec.and(addFilter(filterType, options));
@@ -70,8 +70,8 @@ public class MerchandiseSpec {
         };
     }
 
-    public static MerchandiseSpec builder() {
-        return new MerchandiseSpec();
+    public static UserWebMerchandiseSpec builder() {
+        return new UserWebMerchandiseSpec();
     }
 
     public Specification<Merchandise> build() {

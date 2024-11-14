@@ -4,9 +4,9 @@ import com.capstone.shop.user.v1.controller.dto.PaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
-import com.capstone.shop.user.v1.repository.MerchandiseRepository;
+import com.capstone.shop.user.v1.repository.UserWebMerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
-import com.capstone.shop.user.v1.repository.MerchandiseSpec;
+import com.capstone.shop.user.v1.repository.UserWebMerchandiseSpec;
 import com.capstone.shop.user.v1.util.Filter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +19,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MerchandiseServiceImpl implements MerchandiseService {
-    private final MerchandiseRepository merchandiseRepository;
+public class UserWebUserWebMerchandiseServiceImpl implements UserWebMerchandiseService {
+    private final UserWebMerchandiseRepository userWebMerchandiseRepository;
 
     @Override
     public MerchandiseListAndPaginationResponse getMerchandise(String sort, String search, Pageable pageable,
             Filter filter) {
-        Specification<Merchandise> spec = MerchandiseSpec
+        Specification<Merchandise> spec = UserWebMerchandiseSpec
                 .builder()
                 .addFilterCriteria(filter)
                 .build();
 
-        Page<Merchandise> result = merchandiseRepository.findAll(spec, pageable);
+        Page<Merchandise> result = userWebMerchandiseRepository.findAll(spec, pageable);
 
         List<MerchandiseResponse> merchandiseList = MerchandiseResponse.entityPageToDtoList(result);
 
@@ -43,13 +43,13 @@ public class MerchandiseServiceImpl implements MerchandiseService {
 
     @Override
     public boolean createMerchandise(Merchandise entity) {
-        entity = merchandiseRepository.save(entity);
+        entity = userWebMerchandiseRepository.save(entity);
         return entity.getId() != null;
     }
 
     @Override
     public HomeMerchandiseList getHomeMerchandiseList() {
-        Specification<Merchandise> spec = MerchandiseSpec
+        Specification<Merchandise> spec = UserWebMerchandiseSpec
                 .builder()
                 .isOnSale()
                 .isRegisteredInLast2Weeks()
@@ -58,8 +58,8 @@ public class MerchandiseServiceImpl implements MerchandiseService {
         Pageable top3OrderByCreatedAt = PageRequest.of(0, 3, Direction.DESC, "createdAt");
         Pageable top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "view");
 
-        Page<Merchandise> recentlyRegistered = merchandiseRepository.findAll(spec, top3OrderByCreatedAt);
-        Page<Merchandise> recentlyViewed = merchandiseRepository.findAll(spec, top3OrderByView);
+        Page<Merchandise> recentlyRegistered = userWebMerchandiseRepository.findAll(spec, top3OrderByCreatedAt);
+        Page<Merchandise> recentlyViewed = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
 
         List<MerchandiseResponse> recentlyRegisteredList = MerchandiseResponse.entityPageToDtoList(recentlyRegistered);
         List<MerchandiseResponse> recentlyViewedList = MerchandiseResponse.entityPageToDtoList(recentlyViewed);

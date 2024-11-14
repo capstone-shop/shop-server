@@ -2,7 +2,7 @@ package com.capstone.shop.user.v1.controller;
 
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
-import com.capstone.shop.user.v1.service.MerchandiseService;
+import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.util.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/merchandise")
 public class UserWebMerchandiseController {
-    private final MerchandiseService merchandiseService;
+    private final UserWebMerchandiseService userWebMerchandiseService;
 
     @GetMapping
     public MerchandiseListAndPaginationResponse getMerchandise(
@@ -38,12 +38,12 @@ public class UserWebMerchandiseController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
 
-        return merchandiseService.getMerchandise(sort, search, pageable, filterObj);
+        return userWebMerchandiseService.getMerchandise(sort, search, pageable, filterObj);
     }
 
     @PostMapping
     public ResponseEntity<String> createMerchandise(@RequestBody MerchandiseRegisterRequest request) {
-        boolean result = merchandiseService.createMerchandise(request.toEntity());
+        boolean result = userWebMerchandiseService.createMerchandise(request.toEntity());
         if (result) {
             return ResponseEntity.ok("success to create merchandise");
         }
