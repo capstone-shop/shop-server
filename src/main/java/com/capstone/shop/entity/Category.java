@@ -27,7 +27,7 @@ public class Category extends BaseTimeEntity {
     private boolean isLeaf;
 
     @Column(nullable = false)
-    private Integer sequence;
+    private Long sequence;
 
     @ManyToOne
     @JoinColumn(name = "register_id", nullable = false)
