@@ -37,7 +37,7 @@ public class MerchandiseResponse {
         this.description = entity.getDescription();
         this.price = entity.getPrice();
         this.location = entity.getLocation();
-        this.category = entity.getCategory().getTitle();
+        this.category = entity.getCategory().getTitles();
         this.register = entity.getRegister().getName();
         this.saleState = entity.getSaleState();
         this.merchandiseState = entity.getMerchandiseState();
