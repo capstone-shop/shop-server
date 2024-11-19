@@ -58,7 +58,7 @@ public class UserWebMerchandiseSpec {
                 for (int i = 1; i < columns.length-1; i++) {
                     join = join.join(columns[i]);
                 }
-                path = root.get(columns[columns.length - 1]);
+                path = join.get(columns[columns.length - 1]);
             }
 
             Stream<FilterOption> stream = options.stream();

@@ -13,7 +13,7 @@ create table category
     parent_id   bigint,
     register_id bigint       not null,
     primary key (id)
-) engine = InnoDB
+) engine = InnoDB;
 create table merchandise
 (
     id                    bigint                                       not null auto_increment,
@@ -34,7 +34,7 @@ create table merchandise
     category_id           bigint                                       not null,
     register_id           bigint                                       not null,
     primary key (id)
-) engine = InnoDB
+) engine = InnoDB;
 create table user
 (
     id             bigint not null auto_increment,
@@ -51,19 +51,14 @@ create table user
     reputation     integer,
     role           enum ('ADMIN','USER'),
     primary key (id)
-) engine = InnoDB
+) engine = InnoDB;
 create table user_refresh_token
 (
     refresh_token_seq bigint not null auto_increment,
     refresh_token     varchar(256),
     user_id           bigint not null,
     primary key (refresh_token_seq)
-) engine = InnoDB
-
-
-
-INSERT INTO category (id, title, is_leaf, parent_id, register_id, sequence)
-VALUES (1, '기타 카테고리', true, NULL, 1, 1);
+) engine = InnoDB;
 
 
 
@@ -71,6 +66,21 @@ INSERT INTO user (name, email, password, address, phone_number, dealing_count, r
                   profile_images)
 VALUES ('홍길동', 'hong@example.com', 'hashed_password', 'Seoul, Korea', '01012345678', 0, 30, 'USER', 'local',
         'profile_image_url');
+
+
+
+INSERT INTO category (id, title, is_leaf, parent_id, register_id, sequence) VALUES
+(1, '기타', true, NULL, 1, 1),
+(2, '핸드폰', false, NULL, 1, 2),
+(3, '노트북', true, NULL, 1, 3),
+(4, '안드로이드', false, 2, 1, 1),
+(5, '아이폰', false, 2, 1, 2),
+(6, '삼성', false, 3, 1, 1),
+(7, '애플', false, 3, 1, 2),
+(8, 's9', true, 4, 1, 1),
+(9, 's10', true, 4, 1, 2),
+(10, 'iphone1', true, 5, 1, 1),
+(11, 'iphone2', true, 5, 1, 2);
 
 
 
