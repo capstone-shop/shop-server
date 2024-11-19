@@ -69,8 +69,18 @@ VALUES ('홍길동', 'hong@example.com', 'hashed_password', 'Seoul, Korea', '010
 
 
 
-INSERT INTO category (id, title, is_leaf, parent_id, register_id, sequence)
-VALUES (1, '기타 카테고리', true, NULL, 1, 1);
+INSERT INTO category (id, title, is_leaf, parent_id, register_id, sequence) VALUES
+(1, '기타', true, NULL, 1, 1),
+(2, '핸드폰', false, NULL, 1, 2),
+(3, '노트북', true, NULL, 1, 3),
+(4, '안드로이드', false, 2, 1, 1),
+(5, '아이폰', false, 2, 1, 2),
+(6, '삼성', false, 3, 1, 1),
+(7, '애플', false, 3, 1, 2),
+(8, 's9', true, 4, 1, 1),
+(9, 's10', true, 4, 1, 2),
+(10, 'iphone1', true, 5, 1, 1),
+(11, 'iphone2', true, 5, 1, 2);
 
 
 
