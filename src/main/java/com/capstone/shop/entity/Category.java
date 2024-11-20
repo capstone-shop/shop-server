@@ -43,15 +43,4 @@ public class Category extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Merchandise> merchandiseList = new ArrayList<>();
-
-    public String getTitles() {
-        Category current = this;
-        List<String> result = new LinkedList<>();
-        result.add(title + ":" + id);
-        while (current.getParent() != null) {
-            current = current.getParent();
-            result.add(0, current.title + ":" + current.id);
-        }
-        return String.join(";", result);
-    }
 }

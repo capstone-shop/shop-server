@@ -12,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.Arrays;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -74,4 +76,8 @@ public class Merchandise extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_method", nullable = false)
     private TransactionMethod transactionMethod; // 거래 방식 (직거래, 택배, 둘 다 가능)
+
+    public List<String> getImages() {
+        return Arrays.stream(imageUrls.split(";")).toList();
+    }
 }
