@@ -1,7 +1,7 @@
 package com.capstone.shop.entity;
 
 import jakarta.persistence.*;
-import java.util.LinkedList;
+import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,4 +43,17 @@ public class Category extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Merchandise> merchandiseList = new ArrayList<>();
+
+    //대 카테고리부터 이 메소드가 호출된 카테고리 까지 리스트를 반환.
+    public List<Category> getCategoryList() {
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(this);
+        Category parent = this.parent;
+        while (parent != null) {
+            categoryList.add(parent);
+            parent = parent.getParent();
+        }
+        Collections.reverse(categoryList);
+        return categoryList;
+    }
 }

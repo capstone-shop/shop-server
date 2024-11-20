@@ -1,9 +1,7 @@
-package com.capstone.shop.user.v1.util;
+package com.capstone.shop.user.v1.search;
 
-import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.enums.MerchandiseQualityState;
 import com.capstone.shop.enums.TransactionMethod;
-import jakarta.persistence.criteria.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

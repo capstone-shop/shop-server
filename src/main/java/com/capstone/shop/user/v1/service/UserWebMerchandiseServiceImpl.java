@@ -7,7 +7,7 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
 import com.capstone.shop.user.v1.repository.UserWebMerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.repository.UserWebMerchandiseSpec;
-import com.capstone.shop.user.v1.util.Filter;
+import com.capstone.shop.user.v1.search.Filter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService {
+
     private final UserWebMerchandiseRepository userWebMerchandiseRepository;
 
     @Override
@@ -28,6 +29,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         Specification<Merchandise> spec = UserWebMerchandiseSpec
                 .builder()
                 .addFilterCriteria(filter)
+                .addSearchString(search)
                 .build();
 
         Page<Merchandise> result = userWebMerchandiseRepository.findAll(spec, pageable);

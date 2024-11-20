@@ -39,7 +39,7 @@ public class MerchandiseResponse {
         this.description = entity.getDescription();
         this.price = entity.getPrice();
         this.location = entity.getLocation();
-        this.category = UserWebCategory.entityToDtoList(entity.getCategory());
+        this.category = UserWebCategory.entityListToDtoList(entity.getCategory().getCategoryList());
         this.register = new UserWebSeller(entity.getRegister());
         this.saleState = entity.getSaleState();
         this.merchandiseState = entity.getMerchandiseState();
