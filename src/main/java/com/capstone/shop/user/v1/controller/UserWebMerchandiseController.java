@@ -1,6 +1,6 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.search.Filter;
@@ -23,7 +23,7 @@ public class UserWebMerchandiseController {
     private final UserWebMerchandiseService userWebMerchandiseService;
 
     @GetMapping
-    public MerchandiseListAndPaginationResponse getMerchandise(
+    public UserWebMerchandisePagination getMerchandise(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
             @RequestParam(value = "sort", defaultValue = "wish,desc", required = false) String sort,
@@ -38,7 +38,7 @@ public class UserWebMerchandiseController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
 
-        return userWebMerchandiseService.getMerchandise(sort, search, pageable, filterObj);
+        return userWebMerchandiseService.getMerchandise(search, pageable, filterObj);
     }
 
     @PostMapping
