@@ -3,7 +3,7 @@ package com.capstone.shop.user.v1.controller;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
-import com.capstone.shop.user.v1.util.Filter;
+import com.capstone.shop.user.v1.search.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

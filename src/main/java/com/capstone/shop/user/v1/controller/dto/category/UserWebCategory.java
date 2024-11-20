@@ -2,11 +2,7 @@ package com.capstone.shop.user.v1.controller.dto.category;
 
 import com.capstone.shop.entity.Category;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,16 +31,5 @@ public class UserWebCategory {
                 .stream()
                 .map(UserWebCategory::new)
                 .toList();
-    }
-
-    public static List<UserWebCategory> entityToDtoList(Category entity) {
-        List<Category> categoryList = new ArrayList<>();
-        categoryList.add(entity);
-        while (entity.getParent() != null) {
-            entity = entity.getParent();
-            categoryList.add(entity);
-        }
-        Collections.reverse(categoryList);
-        return entityListToDtoList(categoryList);
     }
 }
