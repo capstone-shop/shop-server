@@ -29,7 +29,6 @@ public class UserWebMerchandiseSpec {
         From<?, ?> join = root;
         for (int i = 0; i < columns.length-1; i++)
             join = join.join(columns[i]);
-
         return join.get(columns[columns.length - 1]);
     }
 
