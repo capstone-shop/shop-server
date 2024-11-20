@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserWebUserWebMerchandiseServiceImpl implements UserWebMerchandiseService {
+public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService {
     private final UserWebMerchandiseRepository userWebMerchandiseRepository;
 
     @Override
