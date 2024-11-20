@@ -1,7 +1,7 @@
 package com.capstone.shop.user.v1.controller;
 
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
-import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseRegisterRequest;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.search.Filter;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +42,8 @@ public class UserWebMerchandiseController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createMerchandise(@RequestBody MerchandiseRegisterRequest request) {
-        boolean result = userWebMerchandiseService.createMerchandise(request.toEntity());
+    public ResponseEntity<String> createMerchandise(@RequestBody UserWebMerchandiseRegister request) {
+        boolean result = userWebMerchandiseService.createMerchandise(request);
         if (result) {
             return ResponseEntity.ok("success to create merchandise");
         }
