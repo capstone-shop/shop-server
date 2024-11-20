@@ -1,9 +1,8 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.user.v1.controller.dto.PaginationResponse;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
-import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseListAndPaginationResponse;
-import com.capstone.shop.user.v1.controller.dto.merchandise.MerchandiseResponse;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandise;
 import com.capstone.shop.user.v1.repository.UserWebMerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.repository.UserWebMerchandiseSpec;
@@ -24,8 +23,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     private final UserWebMerchandiseRepository userWebMerchandiseRepository;
 
     @Override
-    public MerchandiseListAndPaginationResponse getMerchandise(String sort, String search, Pageable pageable,
-            Filter filter) {
+    public UserWebMerchandisePagination getMerchandise(String search, Pageable pageable, Filter filter) {
         Specification<Merchandise> spec = UserWebMerchandiseSpec
                 .builder()
                 .addFilterCriteria(filter)
@@ -34,13 +32,9 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
         Page<Merchandise> result = userWebMerchandiseRepository.findAll(spec, pageable);
 
-        List<MerchandiseResponse> merchandiseList = MerchandiseResponse.entityPageToDtoList(result);
+        List<UserWebMerchandise> merchandiseList = UserWebMerchandise.entityPageToDtoList(result);
 
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
-        var paginationResponse = new PaginationResponse(page, size, sort, search, result);
-
-        return new MerchandiseListAndPaginationResponse(merchandiseList, paginationResponse);
+        return new UserWebMerchandisePagination(merchandiseList, result.getTotalPages());
     }
 
     @Override
@@ -63,8 +57,8 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         Page<Merchandise> recentlyRegistered = userWebMerchandiseRepository.findAll(spec, top3OrderByCreatedAt);
         Page<Merchandise> recentlyViewed = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
 
-        List<MerchandiseResponse> recentlyRegisteredList = MerchandiseResponse.entityPageToDtoList(recentlyRegistered);
-        List<MerchandiseResponse> recentlyViewedList = MerchandiseResponse.entityPageToDtoList(recentlyViewed);
+        List<UserWebMerchandise> recentlyRegisteredList = UserWebMerchandise.entityPageToDtoList(recentlyRegistered);
+        List<UserWebMerchandise> recentlyViewedList = UserWebMerchandise.entityPageToDtoList(recentlyViewed);
 
         return new HomeMerchandiseList(recentlyRegisteredList, recentlyViewedList);
     }

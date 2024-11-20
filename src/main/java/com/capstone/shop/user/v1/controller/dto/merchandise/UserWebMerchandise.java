@@ -15,7 +15,7 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 @Builder
 @Getter
-public class MerchandiseResponse {
+public class UserWebMerchandise {
     private Long id;
     private String name;
     private String description;
@@ -33,7 +33,7 @@ public class MerchandiseResponse {
     private List<String> images;
     private LocalDateTime createdAt;
 
-    public MerchandiseResponse(Merchandise entity) {
+    public UserWebMerchandise(Merchandise entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
@@ -52,14 +52,14 @@ public class MerchandiseResponse {
         this.createdAt = entity.getCreatedAt();
     }
 
-    public static List<MerchandiseResponse> entityPageToDtoList(Page<Merchandise> merchandisePage) {
+    public static List<UserWebMerchandise> entityPageToDtoList(Page<Merchandise> merchandisePage) {
         return entityListToDtoList(merchandisePage.getContent());
     }
 
-    public static List<MerchandiseResponse> entityListToDtoList(List<Merchandise> merchandisePage) {
+    public static List<UserWebMerchandise> entityListToDtoList(List<Merchandise> merchandisePage) {
         return merchandisePage
                 .stream()
-                .map(MerchandiseResponse::new)
+                .map(UserWebMerchandise::new)
                 .toList();
     }
 }
