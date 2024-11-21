@@ -3,13 +3,15 @@ package com.capstone.shop.user.v1.service;
 import com.capstone.shop.entity.Category;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandise;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
 import com.capstone.shop.user.v1.repository.UserWebCategoryRepository;
-import com.capstone.shop.user.v1.repository.UserWebMerchandiseRepository;
+import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseQueryRepository;
+import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
-import com.capstone.shop.user.v1.repository.UserWebMerchandiseSpec;
+import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseSpec;
 import com.capstone.shop.user.v1.search.Filter;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
     private final UserWebMerchandiseRepository userWebMerchandiseRepository;
     private final UserWebCategoryRepository userWebCategoryRepository;
+    private final UserWebMerchandiseQueryRepository userWebMerchandiseQueryRepository;
 
     @Override
     public UserWebMerchandisePagination getMerchandise(String search, Pageable pageable, Filter filter) {
@@ -41,6 +44,18 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         List<UserWebMerchandise> merchandiseList = UserWebMerchandise.entityPageToDtoList(result);
 
         return new UserWebMerchandisePagination(merchandiseList, result.getTotalPages());
+    }
+
+    @Override
+    public UserWebMerchandiseDetail getMerchandise(Long merchandiseId) {
+
+        Merchandise merchandise = userWebMerchandiseRepository.findById(merchandiseId).orElseThrow();
+        List<UserWebMerchandise> list = userWebMerchandiseQueryRepository.findRelatedMerchandises(merchandise)
+                .stream()
+                .map(UserWebMerchandise::new)
+                .toList();
+
+        return new UserWebMerchandiseDetail(new UserWebMerchandise(merchandise), list);
     }
 
     @Override
