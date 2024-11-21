@@ -1,4 +1,4 @@
-package com.capstone.shop.user.v1.repository;
+package com.capstone.shop.user.v1.repository.merchandise;
 
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.search.Filter;
