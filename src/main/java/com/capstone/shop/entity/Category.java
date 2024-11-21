@@ -28,7 +28,7 @@ public class Category extends BaseTimeEntity {
     private boolean isLeaf;
 
     @Column(nullable = false)
-    private Integer sequence;
+    private Long sequence;
 
     @ManyToOne
     @JoinColumn(name = "register_id", nullable = false)
@@ -44,7 +44,34 @@ public class Category extends BaseTimeEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Merchandise> merchandiseList = new ArrayList<>();
 
-    //대 카테고리부터 이 메소드가 호출된 카테고리 까지 리스트를 반환.
+    // 기존 메서드들
+    public void updateIsLeaf(boolean isLeaf) {
+        if (this.isLeaf != isLeaf) {
+            this.isLeaf = isLeaf;
+        }
+    }
+
+    public void updateSequence(Long sequence) {
+        if (!this.sequence.equals(sequence)) {
+            this.sequence = sequence;
+        }
+    }
+
+    public void changeParentCategory(Category newParent) {
+        if (newParent == null) {
+            throw new IllegalArgumentException("부모 카테고리는 null일 수 없습니다.");
+        }
+        this.parent = newParent;
+    }
+
+    public void changeRegister(User newUser){
+        if(newUser == null) {
+            throw new IllegalArgumentException("수정유저는 null일 수 없어요");
+        }
+        this.register = newUser;
+    }
+
+    // 대 카테고리부터 이 메소드가 호출된 카테고리 까지 리스트를 반환.
     public List<Category> getCategoryList() {
         List<Category> categoryList = new ArrayList<>();
         categoryList.add(this);

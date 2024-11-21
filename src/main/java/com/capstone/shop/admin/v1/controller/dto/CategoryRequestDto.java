@@ -11,14 +11,18 @@ import lombok.NoArgsConstructor;
 public class CategoryRequestDto {
     private String title;
 
-    //private boolean isLeaf;
+    private boolean isLeaf;
 
     private String parent;
+
+    private Long sequence;
+
+    private String register;
 
     public Category toEntity(Category parentCategory) {
         return Category.builder()
                 .title(this.title)
-                //.isLeaf(this.isLeaf)
+                .isLeaf(this.isLeaf)
                 .parent(parentCategory)  // 부모 카테고리를 설정
                 .build();
     }
@@ -26,8 +30,10 @@ public class CategoryRequestDto {
     public static CategoryRequestDto fromEntity(Category category) {
         return new CategoryRequestDto(
                 category.getTitle(),
-                //category.isLeaf(),
-                category.getParent() != null ? category.getParent().getTitle() : null
+                category.isLeaf(),  //이거 getIsLeaf()랑 같음
+                category.getParent() != null ? category.getParent().getTitle() : null,
+                category.getSequence(),
+                category.getRegister().toString()
         );
     }
 
