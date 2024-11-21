@@ -63,7 +63,6 @@ public class User extends BaseTimeEntity {
     private AuthProvider authProvider;
 
     @Column(name = "profile_Images", length = 512)
-    @NotNull
     private String profileImages;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
