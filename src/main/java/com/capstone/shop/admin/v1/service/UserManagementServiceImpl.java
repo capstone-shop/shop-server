@@ -1,5 +1,6 @@
 package com.capstone.shop.admin.v1.service;
 
+import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.user.v1.controller.dto.PaginationResponse;
@@ -7,13 +8,12 @@ import com.capstone.shop.user.v1.dto.ApiResponse;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.user.v1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -74,11 +74,38 @@ public class UserManagementServiceImpl implements UserManagementService{
 
 
 
-    public PaginationResponse getAllUsers(int page, int size, String sort) {
+    public PaginatedResponse<UserResponseDto> getAllUsers(int page, int size, String sort, String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-        Page<User> userPage = userRepository.findAll(pageable);
-        return new PaginationResponse(page, size, sort, null, userPage);
+
+        // 검색어가 있으면 검색 조건을 추가하여 사용자 검색
+        Page<User> userPage;
+        if (search != null && !search.isEmpty()) {
+            List<User> users = userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search);
+            // 검색된 결과로 페이지화된 객체를 만들어서 반환
+            userPage = new PageImpl<>(users, pageable, users.size());
+        } else {
+            // 검색어가 없으면 모든 사용자 조회
+            userPage = userRepository.findAll(pageable);
+        }
+
+        // User -> UserResponseDto 변환
+        List<UserResponseDto> userResponseDtos = userPage.getContent()
+                .stream()
+                .map(UserResponseDto::new)
+                .toList();
+
+        // PaginatedResponse 객체 생성 및 반환
+        return new PaginatedResponse<>(
+                page,
+                size,
+                sort,
+                search, // 검색어 전달
+                userPage.getTotalElements(),
+                userPage.getTotalPages(),
+                userResponseDtos
+        );
     }
+
 
     public void deleteUser(Long id){
         User user = userRepository.findById(id)

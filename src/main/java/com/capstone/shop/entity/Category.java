@@ -42,4 +42,31 @@ public class Category extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Merchandise> merchandiseList = new ArrayList<>();
+
+    public void updateIsLeaf(boolean isLeaf) {
+        if (this.isLeaf != isLeaf) {
+            this.isLeaf = isLeaf;
+        }
+    }
+
+    public void updateSequence(Long sequence) {
+        if (!this.sequence.equals(sequence)) {
+            this.sequence = sequence;
+        }
+    }
+
+    // 부모 카테고리 변경 메서드
+    public void changeParentCategory(Category newParent) {
+        if (newParent == null) {
+            throw new IllegalArgumentException("부모 카테고리는 null일 수 없습니다.");
+        }
+        this.parent = newParent;
+    }
+
+    public void changeRegister(User newUser){
+        if(newUser == null) {
+            throw new IllegalArgumentException("수정유저는 null일 수 없어요");
+        }
+        this.register = newUser;
+    }
 }
