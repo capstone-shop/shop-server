@@ -3,6 +3,8 @@ package com.capstone.shop.user.v1.controller.dto.merchandise;
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.enums.MerchandiseQualityState;
 import com.capstone.shop.enums.MerchandiseSaleState;
+import com.capstone.shop.user.v1.controller.dto.category.UserWebCategory;
+import com.capstone.shop.user.v1.controller.dto.user.UserWebSeller;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -13,14 +15,14 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 @Builder
 @Getter
-public class MerchandiseResponse {
+public class UserWebMerchandise {
     private Long id;
     private String name;
     private String description;
     private int price;
     private String location;
-    private String category;
-    private String register;
+    private List<UserWebCategory> category;
+    private UserWebSeller register;
     private MerchandiseSaleState saleState;
     private MerchandiseQualityState merchandiseState;
     private boolean negotiationAvailable;
@@ -28,17 +30,17 @@ public class MerchandiseResponse {
     private int view;
     private int wish;
     private int chat;
-    private String images;
+    private List<String> images;
     private LocalDateTime createdAt;
 
-    public MerchandiseResponse(Merchandise entity) {
+    public UserWebMerchandise(Merchandise entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
         this.price = entity.getPrice();
         this.location = entity.getLocation();
-        this.category = entity.getCategory().getTitle();
-        this.register = entity.getRegister().getName();
+        this.category = UserWebCategory.entityListToDtoList(entity.getCategory().getCategoryList());
+        this.register = new UserWebSeller(entity.getRegister());
         this.saleState = entity.getSaleState();
         this.merchandiseState = entity.getMerchandiseState();
         this.negotiationAvailable = entity.isNegotiationAvailable();
@@ -46,18 +48,18 @@ public class MerchandiseResponse {
         this.view = entity.getView();
         this.wish = entity.getWish();
         this.chat = entity.getChat();
-        this.images = entity.getImageUrls();
+        this.images = entity.getImages();
         this.createdAt = entity.getCreatedAt();
     }
 
-    public static List<MerchandiseResponse> entityPageToDtoList(Page<Merchandise> merchandisePage) {
+    public static List<UserWebMerchandise> entityPageToDtoList(Page<Merchandise> merchandisePage) {
         return entityListToDtoList(merchandisePage.getContent());
     }
 
-    public static List<MerchandiseResponse> entityListToDtoList(List<Merchandise> merchandisePage) {
+    public static List<UserWebMerchandise> entityListToDtoList(List<Merchandise> merchandisePage) {
         return merchandisePage
                 .stream()
-                .map(MerchandiseResponse::new)
+                .map(UserWebMerchandise::new)
                 .toList();
     }
 }

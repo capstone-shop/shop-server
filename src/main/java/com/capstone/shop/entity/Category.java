@@ -1,6 +1,7 @@
 package com.capstone.shop.entity;
 
 import jakarta.persistence.*;
+import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class Category extends BaseTimeEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Merchandise> merchandiseList = new ArrayList<>();
 
+    // 기존 메서드들
     public void updateIsLeaf(boolean isLeaf) {
         if (this.isLeaf != isLeaf) {
             this.isLeaf = isLeaf;
@@ -55,7 +57,6 @@ public class Category extends BaseTimeEntity {
         }
     }
 
-    // 부모 카테고리 변경 메서드
     public void changeParentCategory(Category newParent) {
         if (newParent == null) {
             throw new IllegalArgumentException("부모 카테고리는 null일 수 없습니다.");
@@ -68,5 +69,18 @@ public class Category extends BaseTimeEntity {
             throw new IllegalArgumentException("수정유저는 null일 수 없어요");
         }
         this.register = newUser;
+    }
+
+    // 대 카테고리부터 이 메소드가 호출된 카테고리 까지 리스트를 반환.
+    public List<Category> getCategoryList() {
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(this);
+        Category parent = this.parent;
+        while (parent != null) {
+            categoryList.add(parent);
+            parent = parent.getParent();
+        }
+        Collections.reverse(categoryList);
+        return categoryList;
     }
 }
