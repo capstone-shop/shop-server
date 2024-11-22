@@ -3,7 +3,6 @@ package com.capstone.shop.admin.v1.service;
 import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
 import com.capstone.shop.entity.User;
-
 import com.capstone.shop.user.v1.dto.ApiResponse;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.user.v1.repository.UserRepository;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
