@@ -23,6 +23,7 @@ public class TokenProvider {
         Date tokenExpiry = new Date(now.getTime() + appProperties.getAuth().getAccessTokenExpiry());
         System.out.println(tokenExpiry);
         System.out.println(appProperties.getAuth().getAccessTokenExpiry());
+        System.out.println(userPrincipal.getAuthorities());
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .claim("role", userPrincipal.getAuthorities())
