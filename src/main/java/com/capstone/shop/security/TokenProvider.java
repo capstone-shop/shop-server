@@ -1,78 +1,85 @@
 package com.capstone.shop.security;
 import com.capstone.shop.config.AppProperties;
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 @Service
+@RequiredArgsConstructor
 public class TokenProvider {
-    @Value("${jwt.secret}")
-    private String secret;
+    private final AppProperties appProperties;
     private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    public String createToken(Authentication authentication, Date expiryDate) {
+    public String createToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        //isAdditionalInfoCompleted는 유저가 Oauth2 로그인 시 폰번호, 주소 등을 입력하지 않았을 시
-        //추가 정보 입력 페이지로 리다이렉트 하기 위함
         boolean isAdditionalInfoCompleted = userPrincipal.isAdditionalInfoCompleted();
-
-        // 사용자의 ID를 가져와서 토큰에담는다.
         Long userId = userPrincipal.getId();
 
+        Date now = new Date();
+
+        Date tokenExpiry = new Date(now.getTime() + appProperties.getAuth().getAccessTokenExpiry());
+        System.out.println(tokenExpiry);
+        System.out.println(appProperties.getAuth().getAccessTokenExpiry());
         return Jwts.builder()
                 .setSubject(userId.toString())
-                .claim("role",userPrincipal.getAuthorities())
+                .claim("role", userPrincipal.getAuthorities())
                 .claim("isAdditionalInfoCompleted", isAdditionalInfoCompleted)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .setExpiration(expiryDate) // 만료 시간 설정
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                .setExpiration(tokenExpiry)
                 .compact();
     }
 
-    public String createRefreshToken(Authentication authentication, Date refreshExpiry) {
+    public String createRefreshToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Long userId = userPrincipal.getId();
+
+        Date now = new Date();
+        Date refreshTokenExpiry = new Date(now.getTime() + appProperties.getAuth().getRefreshTokenExpiry());
+
         return Jwts.builder()
                 .setSubject(userId.toString())
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .setExpiration(refreshExpiry) // 만료 시간 설정
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                .setExpiration(refreshTokenExpiry)
                 .compact();
     }
+
     public String createNewRefreshToken(Long userId) {
         Date now = new Date();
-        Date refreshExpiry = new Date(now.getTime() + 604800000L); // 7일
+        Date refreshExpiry = new Date(now.getTime() + appProperties.getAuth().getRefreshTokenExpiry());
+
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(now)
                 .setExpiration(refreshExpiry)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
+
     public String createAccessTokenFromRefreshToken(String refreshToken) {
         Claims claims = Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(refreshToken)
                 .getBody();
 
         Long userId = Long.parseLong(claims.getSubject());
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 3600000); // 1시간
+        Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getAccessTokenExpiry());
 
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
-
 
     public Claims getExpiredTokenClaims(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(appProperties.getAuth().getTokenSecret())
                     .parseClaimsJws(token);
         } catch (ExpiredJwtException e) {
             logger.info("Expired JWT token.");
@@ -83,26 +90,36 @@ public class TokenProvider {
 
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
 
         return Long.parseLong(claims.getSubject());
     }
+
+    public Long getUserIdFromExpiredToken(String token) {  //토큰이 만료됐을때 유저아이디 추출
+        try {
+            Claims claims = getExpiredTokenClaims(token);
+            return claims != null ? Long.parseLong(claims.getSubject()) : null;
+        } catch (Exception e) {
+            logger.error("Error getting user id from expired token", e);
+            return null;
+        }
+    }
+
     public Boolean getAdditionalInfoCompletedFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.get("isAdditionalInfoCompleted", Boolean.class);
     }
 
-
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(appProperties.getAuth().getTokenSecret())
                     .parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
@@ -121,13 +138,12 @@ public class TokenProvider {
 
     public boolean validateRefreshToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.parser()
+                    .setSigningKey(appProperties.getAuth().getTokenSecret())
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
-
-    //todo: 토큰 만료 임박 시 새로운 토큰 생성해서 새 요청시 갈아끼우기
-
 }

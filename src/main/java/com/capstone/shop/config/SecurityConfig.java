@@ -67,7 +67,7 @@ public class SecurityConfig {
                                 "oauth2/authorize",
                                 "oauth2/authorization/*",
                                 "login/oauth2/code/*",
-                                "api/v1/**",
+                                "api/v1/user/**",
                                 "static/**",
                                 "assets/**"
                         ).permitAll()
@@ -82,9 +82,10 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
                         .permitAll()
+                        // api/v1/admin으로 시작하는 요청은 ADMIN 역할을 가진 사용자만 접근 가능
+//                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
                 .oauth2Login(oauth2Login ->
                         oauth2Login
                                 .authorizationEndpoint(authorizationEndpoint ->
@@ -104,9 +105,11 @@ public class SecurityConfig {
                                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new RestAuthenticationEntryPoint()));
+
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

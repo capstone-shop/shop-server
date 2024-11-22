@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 @Getter
-@ConfigurationProperties(prefix = "app")//application.뭐시기 읽어옴
+@ConfigurationProperties(prefix = "app")//settings.뭐시기 읽어옴
 public class AppProperties {
     //auth는 jwt 설정값, oauth2는 oauth2 담을거
     private final Auth auth = new Auth();
@@ -23,7 +23,7 @@ public class AppProperties {
     @AllArgsConstructor
     public static class Auth {
         private String tokenSecret;
-        private long tokenExpirationMsec;
+        private long accessTokenExpiry;
         private long refreshTokenExpiry;
 
     }

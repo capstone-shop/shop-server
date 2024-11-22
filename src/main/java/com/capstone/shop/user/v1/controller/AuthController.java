@@ -24,8 +24,6 @@ import java.util.Map;
 @RequestMapping("/api/v1/user")
 public class AuthController {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final AuthServiceImpl authService;
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
@@ -58,7 +56,7 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse(true, "AdditionalInfo saved successfully"));
     }
 
-    @GetMapping("/user/me")
+    @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal){
         return userRepository.findById(userPrincipal.getId())

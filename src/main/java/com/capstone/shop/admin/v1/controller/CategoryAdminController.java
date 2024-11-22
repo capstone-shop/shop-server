@@ -23,7 +23,7 @@ public class CategoryAdminController {
     private final CategoryServiceImpl categoryService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "카테고리 생성", description = "새로운 카테고리를 생성합니다.")
     public ResponseEntity<ApiResponse> createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
         ApiResponse response = categoryService.createCategory(categoryRequestDto);

@@ -87,14 +87,10 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
         Long userId = ((UserPrincipal)authentication.getPrincipal()).getId();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("User not found with ID: " + userId));
-        Date now = new Date();
-        long expiry = appProperties.getAuth().getTokenExpirationMsec();
-        long refreshExpiry = appProperties.getAuth().getRefreshTokenExpiry();
-        Date accessTokenExpiryDate = new Date(now.getTime() + expiry);
-        Date refreshTokenExpiryDate = new Date(now.getTime() + refreshExpiry);
 
-        String accessToken = tokenProvider.createToken(authentication, accessTokenExpiryDate);
-        String refreshToken = tokenProvider.createRefreshToken(authentication, refreshTokenExpiryDate);
+
+        String accessToken = tokenProvider.createToken(authentication);
+        String refreshToken = tokenProvider.createRefreshToken(authentication);
         refreshTokenService.saveRefreshToken(user, refreshToken);
 
 
