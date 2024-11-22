@@ -3,7 +3,7 @@ package com.capstone.shop.admin.v1.service;
 import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
 import com.capstone.shop.entity.User;
-import com.capstone.shop.user.v1.controller.dto.PaginationResponse;
+
 import com.capstone.shop.user.v1.dto.ApiResponse;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 import com.capstone.shop.user.v1.repository.UserRepository;

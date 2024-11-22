@@ -12,14 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Shop API Docs",
-                description = "쇼핑몰 api 테스트",
+                description = "쇼핑몰 API 테스트",
                 version = "v1"
         )
 )
 @Configuration
 public class SwaggerConfig {
 
-    private static final String BEARER_TOKEN_PREFIX = "Bearer";
+    private static final String BEARER_TOKEN_PREFIX = "bearer"; // 'bearer'로 수정
 
     @Bean
     public OpenAPI openAPI() {
@@ -29,12 +29,11 @@ public class SwaggerConfig {
                 .addSecuritySchemes(securityJwtName, new SecurityScheme()
                         .name(securityJwtName)
                         .type(SecurityScheme.Type.HTTP)
-                        .scheme(BEARER_TOKEN_PREFIX)
-                        .bearerFormat(securityJwtName));
+                        .scheme(BEARER_TOKEN_PREFIX) // 인증 방식 지정
+                        .bearerFormat("JWT")); // Bearer 토큰 형식
 
         return new OpenAPI()
                 .addSecurityItem(securityRequirement)
                 .components(components);
     }
-
 }

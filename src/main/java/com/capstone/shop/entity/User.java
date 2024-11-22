@@ -55,7 +55,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "role", length = 20)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Role role = Role.USER;
+    private Role role = Role.ROLE_USER;
 
     @Column(name = "auth_provider", length = 20)
     @Enumerated(EnumType.STRING)
@@ -63,7 +63,6 @@ public class User extends BaseTimeEntity {
     private AuthProvider authProvider;
 
     @Column(name = "profile_Images", length = 512)
-    @NotNull
     private String profileImages;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

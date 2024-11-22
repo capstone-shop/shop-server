@@ -31,15 +31,22 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                authenticateUser(jwt, request);
-            } else if (jwt != null) {
-                handleExpiredAccessToken(request, response);
-                return;
+            if (StringUtils.hasText(jwt)) {
+                if (tokenProvider.validateToken(jwt)) {
+                    authenticateUser(jwt, request);
+                } else {
+                    logger.info("토큰 만료.");
+                    // 토큰이 만료되었을 때
+                    Long userId = tokenProvider.getUserIdFromExpiredToken(jwt);
+                    if (userId != null) {
+                        handleExpiredAccessToken(userId, request, response);
+                        return;
+                    }
+                }
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
@@ -47,22 +54,24 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void handleExpiredAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String refreshToken = getRefreshTokenFromDB(request);
-        if (refreshToken != null && tokenProvider.validateRefreshToken(refreshToken)) {
-            String newAccessToken = tokenProvider.createAccessTokenFromRefreshToken(refreshToken);
+    private void handleExpiredAccessToken(Long userId, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userId);
+
+        if (userRefreshToken != null && tokenProvider.validateRefreshToken(userRefreshToken.getRefreshToken())) {
+            String newAccessToken = tokenProvider.createAccessTokenFromRefreshToken(userRefreshToken.getRefreshToken());
+            authenticateUser(newAccessToken, request);
             response.setHeader("Authorization", "Bearer " + newAccessToken);
-        } else if (refreshToken != null) {
-            Long userId = getUserIdFromRefreshToken(refreshToken);
-            User user = userRepository.findById(userId).orElseThrow(() ->
-                    new IllegalArgumentException("User not found with ID: " + userId));
+            logger.info("리프래쉬토큰으로 새로운 액세스토큰 생성함.");
+        } else {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없음: " + userId));
             String newRefreshToken = tokenProvider.createNewRefreshToken(userId);
             saveRefreshTokenToDB(user, newRefreshToken);
 
             String newAccessToken = tokenProvider.createAccessTokenFromRefreshToken(newRefreshToken);
+            authenticateUser(newAccessToken, request);
             response.setHeader("Authorization", "Bearer " + newAccessToken);
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid authentication.");
         }
     }
 
@@ -76,9 +85,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         return tokenProvider.getUserIdFromToken(refreshToken);
     }
 
+//    private void saveRefreshTokenToDB(User user, String newRefreshToken) {
+//        userRefreshTokenRepository.save(new UserRefreshToken(user, newRefreshToken));
+//    } 같은 사용자가 여러번 동시에 요청을 보내면 토큰이 중복 생성되는 문제.. 아래 메서드로 다시 만듦
     private void saveRefreshTokenToDB(User user, String newRefreshToken) {
-        userRefreshTokenRepository.save(new UserRefreshToken(user, newRefreshToken));
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(user.getId());
+        if (userRefreshToken == null) {
+            userRefreshToken = new UserRefreshToken(user, newRefreshToken);
+        } else {
+            userRefreshToken.setRefreshToken(newRefreshToken);
+        }
+        userRefreshTokenRepository.save(userRefreshToken);
     }
+
 
     private void authenticateUser(String jwt, HttpServletRequest request) {
         Long userId = tokenProvider.getUserIdFromToken(jwt);

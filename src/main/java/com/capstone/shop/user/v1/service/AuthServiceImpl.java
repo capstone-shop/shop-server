@@ -33,8 +33,6 @@ public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    private final AppProperties appProperties;
-    private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final RefreshTokenService refreshTokenService;
 
     @Override
@@ -50,16 +48,8 @@ public class AuthServiceImpl implements AuthService{
         Long userId = userPrincipal.getId();
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("User not found with ID: " + userId));
-        long expiry = appProperties.getAuth().getTokenExpirationMsec();
-        long refreshExpiry = appProperties.getAuth().getRefreshTokenExpiry();
-
-        Date now = new Date();
-        Date accessTokenExpiryDate = new Date(now.getTime() + expiry);
-        Date refreshTokenExpiryDate = new Date(now.getTime() + refreshExpiry);
-
-
-        String accessToken = tokenProvider.createToken(authentication, accessTokenExpiryDate);
-        String refreshToken = tokenProvider.createRefreshToken(authentication, refreshTokenExpiryDate);
+        String accessToken = tokenProvider.createToken(authentication);
+        String refreshToken = tokenProvider.createRefreshToken(authentication);
         refreshTokenService.saveRefreshToken(user, refreshToken);
         Map<String, String> tokens = new HashMap<>();
 
@@ -81,7 +71,7 @@ public class AuthServiceImpl implements AuthService{
                 .phoneNumber(phoneNumber) // 전화번호 필드 추가
                 .authProvider(AuthProvider.local) // authProvider 필드 추가
                 .profileImages(profileImages) // 프로필 이미지 필드 추가
-                .role(Role.USER) // 역할 필드 추가
+                .role(Role.ROLE_USER) // 역할 필드 추가
                 .build();
         User savedUser = userRepository.save(user);
 
