@@ -28,7 +28,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+                singletonList(new SimpleGrantedAuthority(user.getRole().name())); //유저 권한에 따라 동적으로 권한 인가하도록 수정
         return new UserPrincipal(
                 user.getId(),
                 user.getEmail(),
