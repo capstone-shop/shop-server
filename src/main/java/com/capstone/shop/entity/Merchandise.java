@@ -12,6 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -31,6 +35,8 @@ public class Merchandise extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
+    @Pattern(message = "name 유효성 검사 실패", regexp = "^[a-zA-Z가-힣0-9 ]+$")
     private String name;
 
     @ManyToOne
@@ -38,9 +44,12 @@ public class Merchandise extends BaseTimeEntity {
     private User register; // 등록자 User 객체와 연결
 
     @Column(columnDefinition = "TEXT")
+    @NotBlank
+    @Pattern(message = "description 유효성 검사 실패", regexp = "^([^<>]|<b>|</b>)+$")
     private String description; // 상품 설명
 
     @Column(nullable = false)
+    @Positive
     private int price;
 
     @ManyToOne
@@ -56,18 +65,24 @@ public class Merchandise extends BaseTimeEntity {
     private MerchandiseQualityState merchandiseState; // 상품 상태 (NEW, GOOD, AVERAGE, BAD, BROKEN)
 
     @Column(name = "image_urls")
+    @Pattern(message = "imageUrls 유효성 검사 실패", regexp = "^(https?://[^<>`₩^;]+(;https?://[^<>`₩^;]+)*)?$")
     private String imageUrls; // 이미지 URL (;로 구분)
 
     @Column(nullable = false)
+    @PositiveOrZero
     private int view; // 조회수
 
     @Column(nullable = false)
+    @PositiveOrZero
     private int wish; // 찜 횟수
 
     @Column(nullable = false)
+    @PositiveOrZero
     private int chat; // 대화 횟수
 
     @Column(nullable = false)
+    @NotBlank
+    @Pattern(message = "location 유효성 검사 실패", regexp = "^[a-zA-Z가-힣0-9.,\\-_ ]+$")
     private String location; // 판매 지역
 
     @Column(name = "negotiation_available", nullable = false)

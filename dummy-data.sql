@@ -64,7 +64,7 @@ create table user_refresh_token
 
 INSERT INTO user (name, email, password, address, phone_number, dealing_count, reputation, role, auth_provider,
                   profile_images)
-VALUES ('홍길동', 'hong@example.com', 'hashed_password', 'Seoul, Korea', '01012345678', 0, 30, 'USER', 'local',
+VALUES ('홍길동', 'hong@example.com', 'hashed_password', 'Seoul, Korea', '01012345678', 0, 30, 'ROLE_USER', 'local',
         'profile_image_url');
 
 
@@ -75,8 +75,8 @@ INSERT INTO category (id, title, is_leaf, parent_id, register_id, sequence) VALU
 (3, '노트북', true, NULL, 1, 3),
 (4, '안드로이드', false, 2, 1, 1),
 (5, '아이폰', false, 2, 1, 2),
-(6, '삼성', false, 3, 1, 1),
-(7, '애플', false, 3, 1, 2),
+(6, '삼성', true, 3, 1, 1),
+(7, '애플', true, 3, 1, 2),
 (8, 's9', true, 4, 1, 1),
 (9, 's10', true, 4, 1, 2),
 (10, 'iphone1', true, 5, 1, 1),
