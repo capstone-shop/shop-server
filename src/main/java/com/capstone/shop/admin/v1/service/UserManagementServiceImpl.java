@@ -44,20 +44,22 @@ public class UserManagementServiceImpl implements UserManagementService{
 
 
     @Override
-    public ApiResponse updateUser(SignUpRequest signUpRequest) {
-        User user = userRepository.findByEmail(signUpRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + signUpRequest.getEmail()));
+    public ApiResponse updateUser(SignUpRequest signUpRequest,Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("유저 ID가 존재하지 않습니다: " + signUpRequest.getEmail()));
 
         // 의도치 않게 비밀번호가 null 인 가능성 배제
-        if (signUpRequest.getPassword() != null && !signUpRequest.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        }
+//        if (signUpRequest.getPassword() == null) {
+//            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+//        }
 
         user.setName(signUpRequest.getName());
-        user.setAuthProvider(signUpRequest.getAuthProvider());
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setAddress(signUpRequest.getAddress());
         user.setPhoneNumber(signUpRequest.getPhone_number()); // JSON 필드명 통일
         user.setProfileImages(signUpRequest.getProfileImages());
+        user.setAuthProvider(signUpRequest.getAuthProvider());
         user.setRole(signUpRequest.getRole());
 
         userRepository.save(user);

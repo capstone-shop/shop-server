@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,15 +33,33 @@ public class UserManagementController {
         ApiResponse response = userManagementService.createUser(signUpRequest);
         return ResponseEntity.ok(response);
     }
-
-    @Operation(summary = "사용자 수정", description = "기존 사용자를 수정합니다.")
-    @PutMapping("/users")
+    @Operation(
+            summary = "사용자 수정",
+            description = "기존 사용자를 수정합니다."
+    )
+    @PutMapping("/users/{id}")
     public ResponseEntity<ApiResponse> updateUser(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "사용자 수정 요청 데이터", required = true, content = @Content(schema = @Schema(implementation = SignUpRequest.class)))
-            @RequestBody SignUpRequest signUpRequest) {
-        ApiResponse response = userManagementService.updateUser(signUpRequest);
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "사용자 수정 요청 데이터",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = SignUpRequest.class))
+            )
+            @RequestBody SignUpRequest signUpRequest,
+            @PathVariable Long id
+    ) {
+        // id로 사용자 존재 여부 확인
+        UserResponseDto existingUser = userManagementService.getUser(id);
+        if (existingUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "사용자를 찾을 수 없습니다."));
+        }
+
+        // 사용자 업데이트 로직 실행
+        ApiResponse response = userManagementService.updateUser(signUpRequest, id);
+
         return ResponseEntity.ok(response);
     }
+
 
     @Operation(summary = "특정 사용자 조회", description = "ID로 특정 사용자를 조회합니다.")
     @GetMapping("/users/{id}")
