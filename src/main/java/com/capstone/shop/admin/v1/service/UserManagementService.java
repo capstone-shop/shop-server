@@ -8,7 +8,7 @@ import com.capstone.shop.user.v1.dto.SignUpRequest;
 public interface UserManagementService {
     ApiResponse createUser(SignUpRequest signUpRequest);
 
-    ApiResponse updateUser(SignUpRequest signUpRequest);
+    ApiResponse updateUser(SignUpRequest signUpRequest,Long id);
 
     UserResponseDto getUser(Long id);
 

@@ -1,5 +1,7 @@
 package com.capstone.shop.user.v1.controller;
 
+import com.capstone.shop.admin.v1.controller.dto.UserMeResponse;
+import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
 import com.capstone.shop.user.v1.dto.*;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.exception.ResourceNotFoundException;
@@ -57,9 +59,20 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('USER')")
-    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal){
+    public UserMeResponse getCurrentUser(@CurrentUser UserPrincipal userPrincipal){
         return userRepository.findById(userPrincipal.getId())
+                .map(user->new UserMeResponse(
+                        user.getCreatedAt(),
+                        user.getModifiedAt(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getAddress(),
+                        user.getPhoneNumber(),
+                        user.getDealingCount(),
+                        user.getReputation(),
+                        user.getAuthProvider().toString(),
+                        user.getProfileImages()
+                ))
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
 }
