@@ -67,7 +67,7 @@ public class SecurityConfig {
                                 "oauth2/authorize",
                                 "oauth2/authorization/*",
                                 "login/oauth2/code/*",
-                                "api/v1/user/**",
+                                "api/v1/**",
                                 "static/**",
                                 "assets/**"
                         ).permitAll()
