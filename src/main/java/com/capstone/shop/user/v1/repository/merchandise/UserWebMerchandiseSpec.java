@@ -8,9 +8,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -34,13 +32,6 @@ public class UserWebMerchandiseSpec {
 
     public UserWebMerchandiseSpec isOnSale() {
         spec = spec.and((root, query, builder) -> builder.equal(root.get("saleState"), "SALE"));
-        return this;
-    }
-
-    public UserWebMerchandiseSpec isRegisteredInLast2Weeks() {
-        LocalDate localDate = LocalDate.now().minusWeeks(2);
-        Date date = new Date(localDate.toEpochDay());
-        spec = spec.and(((root, query, builder) -> builder.greaterThanOrEqualTo(root.get("createdAt"), date)));
         return this;
     }
 
