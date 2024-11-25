@@ -1,7 +1,11 @@
 package com.capstone.shop.user.v1.controller;
 
+
 import com.capstone.shop.entity.User;
+
 import com.capstone.shop.security.CurrentUser;
+import com.capstone.shop.security.UserPrincipal;
+
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
@@ -13,7 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,8 +54,10 @@ public class UserWebMerchandiseController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createMerchandise(@RequestBody UserWebMerchandiseRegister request) {
-        boolean result = userWebMerchandiseService.createMerchandise(request);
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> createMerchandise(@RequestBody UserWebMerchandiseRegister request,
+            @CurrentUser UserPrincipal userPrincipal) {
+        boolean result = userWebMerchandiseService.createMerchandise(request, userPrincipal.getId());
         if (result) {
             return ResponseEntity.ok("success to create merchandise");
         }

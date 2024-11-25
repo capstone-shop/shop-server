@@ -16,7 +16,7 @@ public interface UserWebMerchandiseService {
 
     UserWebMerchandiseDetail getMerchandise(Long merchandiseId);
 
-    boolean createMerchandise(UserWebMerchandiseRegister request);
+    boolean createMerchandise(UserWebMerchandiseRegister request, Long userId);
 
     HomeMerchandiseList getHomeMerchandiseList();
 

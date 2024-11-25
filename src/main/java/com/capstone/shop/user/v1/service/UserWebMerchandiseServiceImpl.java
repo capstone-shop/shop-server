@@ -62,13 +62,16 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
                 .map(UserWebMerchandise::new)
                 .toList();
 
+        merchandise.addViewCount();
+        merchandise = userWebMerchandiseRepository.save(merchandise);
+
         return new UserWebMerchandiseDetail(new UserWebMerchandise(merchandise), list);
     }
 
     @Override
-    public boolean createMerchandise(UserWebMerchandiseRegister request) {
+    public boolean createMerchandise(UserWebMerchandiseRegister request, Long id) {
         // 추후 현재 로그인한 유저를 가져와야 함.
-        User user = User.builder().id(1L).build();
+        User user = User.builder().id(id).build();
 
         Optional<Category> categoryOp = userWebCategoryRepository.findById(Long.valueOf(request.getCategoryId()));
         if (categoryOp.isEmpty())
@@ -86,19 +89,18 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         Specification<Merchandise> spec = UserWebMerchandiseSpec
                 .builder()
                 .isOnSale()
-                .isRegisteredInLast2Weeks()
                 .build();
 
-        Pageable top3OrderByCreatedAt = PageRequest.of(0, 3, Direction.DESC, "createdAt");
-        Pageable top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "view");
+        Pageable top3OrderByCreatedAt = PageRequest.of(0, 4, Direction.DESC, "createdAt");
+        Pageable top3OrderByView = PageRequest.of(0, 4, Direction.DESC, "wish");
 
         Page<Merchandise> recentlyRegistered = userWebMerchandiseRepository.findAll(spec, top3OrderByCreatedAt);
-        Page<Merchandise> recentlyViewed = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
+        Page<Merchandise> mostWished = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
 
         List<UserWebMerchandise> recentlyRegisteredList = UserWebMerchandise.entityPageToDtoList(recentlyRegistered);
-        List<UserWebMerchandise> recentlyViewedList = UserWebMerchandise.entityPageToDtoList(recentlyViewed);
+        List<UserWebMerchandise> mostWishedList = UserWebMerchandise.entityPageToDtoList(mostWished);
 
-        return new HomeMerchandiseList(recentlyRegisteredList, recentlyViewedList);
+        return new HomeMerchandiseList(recentlyRegisteredList, mostWishedList);
     }
 
     @Override
