@@ -1,5 +1,6 @@
 package com.capstone.shop.entity;
 
+import com.capstone.shop.admin.v1.controller.dto.MerchandiseUpdateResponseDto;
 import com.capstone.shop.enums.MerchandiseQualityState;
 import com.capstone.shop.enums.MerchandiseSaleState;
 import com.capstone.shop.enums.TransactionMethod;
@@ -79,5 +80,21 @@ public class Merchandise extends BaseTimeEntity {
 
     public List<String> getImages() {
         return Arrays.stream(imageUrls.split(";")).toList();
+    }
+
+    public static Merchandise toEntity(MerchandiseUpdateResponseDto dto, Category category, User register) {
+        return Merchandise.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .price(dto.getPrice())
+                .category(category)
+                .saleState(dto.getSaleState())
+                .merchandiseState(dto.getMerchandiseState())
+                .imageUrls(String.join(";", dto.getImages())) // List → ;로 결합된 문자열
+                .location(dto.getLocation())
+                .negotiationAvailable(dto.isNegotiationAvailable())
+                .transactionMethod(dto.getTransactionMethod())
+                .register(register)
+                .build();
     }
 }

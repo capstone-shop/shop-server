@@ -85,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public ApiResponse deleteCategory(String categoryTitle) {
+    public ApiResponse deleteCategory(String categoryTitle) { //id가 인자가 아닌 이유는 카테고리 엔티티가 자기참조 구조라서..
         // 삭제할 카테고리 찾기
         Category categoryToDelete = categoryRepository.findByTitle(categoryTitle)
                 .orElseThrow(() -> new IllegalArgumentException("삭제할 카테고리를 찾을 수 없습니다: " + categoryTitle));
