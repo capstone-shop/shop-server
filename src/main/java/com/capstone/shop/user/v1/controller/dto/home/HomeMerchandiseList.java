@@ -9,5 +9,5 @@ import lombok.Getter;
 @Getter
 public class HomeMerchandiseList {
     private List<UserWebMerchandise> recentlyRegistered;
-    private List<UserWebMerchandise> recentlyViewed;
+    private List<UserWebMerchandise> mostWished;
 }
