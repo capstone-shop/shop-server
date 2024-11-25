@@ -1,11 +1,8 @@
 package com.capstone.shop.admin.v1.controller;
 
-import com.capstone.shop.admin.v1.controller.dto.CategoryRequestDto;
-import com.capstone.shop.admin.v1.controller.dto.MerchandiseUpdateResponseDto;
+import com.capstone.shop.admin.v1.controller.dto.MerchandiseUpdateRequestDto;
 import com.capstone.shop.admin.v1.service.UserMerchandiseServiceImpl;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
 import com.capstone.shop.user.v1.dto.ApiResponse;
-import com.capstone.shop.user.v1.service.UserWebMerchandiseServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +21,8 @@ public class MerchandiseManagemetController {
 
     @PutMapping
     @Operation(summary = "상품정보 수정", description = "기존 상품정보를 수정합니다.")
-    public ResponseEntity<ApiResponse> updateMerchandise(@RequestBody MerchandiseUpdateResponseDto merchandiseUpdateResponseDto, @PathVariable Long id) {
-        ApiResponse response = userMerchandiseService.updateMerchandise(merchandiseUpdateResponseDto, id);
+    public ResponseEntity<ApiResponse> updateMerchandise(@RequestBody MerchandiseUpdateRequestDto merchandiseUpdateRequestDto, @PathVariable Long id) {
+        ApiResponse response = userMerchandiseService.updateMerchandise(merchandiseUpdateRequestDto, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -2,17 +2,23 @@ package com.capstone.shop.user.v1.service;
 
 import com.capstone.shop.entity.Category;
 import com.capstone.shop.entity.User;
+import com.capstone.shop.entity.Wish;
+import com.capstone.shop.security.CurrentUser;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandise;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
+import com.capstone.shop.user.v1.dto.ApiResponse;
 import com.capstone.shop.user.v1.repository.UserWebCategoryRepository;
+import com.capstone.shop.user.v1.repository.WishRepository;
 import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseQueryRepository;
 import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseRepository;
 import com.capstone.shop.entity.Merchandise;
 import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseSpec;
 import com.capstone.shop.user.v1.search.Filter;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +36,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     private final UserWebMerchandiseRepository userWebMerchandiseRepository;
     private final UserWebCategoryRepository userWebCategoryRepository;
     private final UserWebMerchandiseQueryRepository userWebMerchandiseQueryRepository;
+    private final WishRepository wishRepository;
 
     @Override
     public UserWebMerchandisePagination getMerchandise(String search, Pageable pageable, Filter filter) {
@@ -93,4 +100,30 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
         return new HomeMerchandiseList(recentlyRegisteredList, recentlyViewedList);
     }
+
+    @Override
+    public ApiResponse WishCount(Long id, User user){
+        Merchandise merchandise = userWebMerchandiseRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("상품이 없어요"));
+        Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
+        if (existingWish.isPresent()) {//이미 찜을 했다면?
+            merchandise.subWishCount();    //찜 목록이랑 횟수 감소
+            wishRepository.delete(existingWish.get());
+        } else{
+            merchandise.addWishCount(); //아니라면 추가
+        }
+
+        Wish newWish = Wish.builder()
+                .user(user)
+                .merchandise(merchandise)
+                .wishDate(LocalDateTime.now())  //찜 날짜임
+                .build();
+
+        wishRepository.save(newWish);
+        userWebMerchandiseRepository.save(merchandise);
+
+        return new ApiResponse(true, "찜 횟수 증가 및 위시리스트에 추가 성공");
+
+    }
+
 }
