@@ -83,14 +83,14 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
                 .build();
 
         Pageable top3OrderByCreatedAt = PageRequest.of(0, 3, Direction.DESC, "createdAt");
-        Pageable top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "view");
+        Pageable top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "wish");
 
         Page<Merchandise> recentlyRegistered = userWebMerchandiseRepository.findAll(spec, top3OrderByCreatedAt);
-        Page<Merchandise> recentlyViewed = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
+        Page<Merchandise> mostWished = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
 
         List<UserWebMerchandise> recentlyRegisteredList = UserWebMerchandise.entityPageToDtoList(recentlyRegistered);
-        List<UserWebMerchandise> recentlyViewedList = UserWebMerchandise.entityPageToDtoList(recentlyViewed);
+        List<UserWebMerchandise> mostWishedList = UserWebMerchandise.entityPageToDtoList(mostWished);
 
-        return new HomeMerchandiseList(recentlyRegisteredList, recentlyViewedList);
+        return new HomeMerchandiseList(recentlyRegisteredList, mostWishedList);
     }
 }
