@@ -55,6 +55,9 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
                 .map(UserWebMerchandise::new)
                 .toList();
 
+        merchandise.addViewCount();
+        merchandise = userWebMerchandiseRepository.save(merchandise);
+
         return new UserWebMerchandiseDetail(new UserWebMerchandise(merchandise), list);
     }
 
