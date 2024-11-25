@@ -59,9 +59,9 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     }
 
     @Override
-    public boolean createMerchandise(UserWebMerchandiseRegister request) {
+    public boolean createMerchandise(UserWebMerchandiseRegister request, Long id) {
         // 추후 현재 로그인한 유저를 가져와야 함.
-        User user = User.builder().id(1L).build();
+        User user = User.builder().id(id).build();
 
         Optional<Category> categoryOp = userWebCategoryRepository.findById(Long.valueOf(request.getCategoryId()));
         if (categoryOp.isEmpty())
