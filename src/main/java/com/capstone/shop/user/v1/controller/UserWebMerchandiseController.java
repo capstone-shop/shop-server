@@ -1,10 +1,15 @@
 package com.capstone.shop.user.v1.controller;
 
+
+import com.capstone.shop.entity.User;
+
 import com.capstone.shop.security.CurrentUser;
 import com.capstone.shop.security.UserPrincipal;
+
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
+import com.capstone.shop.user.v1.dto.ApiResponse;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.search.Filter;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.*;
+
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,4 +63,10 @@ public class UserWebMerchandiseController {
         }
         return ResponseEntity.badRequest().body("merchandise could not be created");
     }
+
+    @PatchMapping("/{id}/wish")   //요청 보내면 위시카운트 + 1 , 위시리스트 등록, 만약 위시리스트에 이미 있는 상품이면 위시카운트 -1
+    public ApiResponse addOrSubWish(@PathVariable Long id, @CurrentUser User user) {
+        return userWebMerchandiseService.WishCount(id, user);
+    }
+
 }

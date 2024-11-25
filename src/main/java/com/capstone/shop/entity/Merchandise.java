@@ -1,22 +1,8 @@
 package com.capstone.shop.entity;
-
-import com.capstone.shop.admin.v1.controller.dto.MerchandiseUpdateResponseDto;
 import com.capstone.shop.enums.MerchandiseQualityState;
 import com.capstone.shop.enums.MerchandiseSaleState;
 import com.capstone.shop.enums.TransactionMethod;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -97,20 +83,14 @@ public class Merchandise extends BaseTimeEntity {
         return Arrays.stream(imageUrls.split(";")).toList();
     }
 
-    public static Merchandise toEntity(MerchandiseUpdateResponseDto dto, Category category, User register) {
-        return Merchandise.builder()
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .price(dto.getPrice())
-                .category(category)
-                .saleState(dto.getSaleState())
-                .merchandiseState(dto.getMerchandiseState())
-                .imageUrls(String.join(";", dto.getImages())) // List → ;로 결합된 문자열
-                .location(dto.getLocation())
-                .negotiationAvailable(dto.isNegotiationAvailable())
-                .transactionMethod(dto.getTransactionMethod())
-                .register(register)
-                .build();
+    @OneToMany(mappedBy = "merchandise", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Wish> wishes;
+
+    public void addWishCount(){
+        wish++;
+    }
+    public void subWishCount(){
+        wish--;
     }
 
     public void addViewCount() {

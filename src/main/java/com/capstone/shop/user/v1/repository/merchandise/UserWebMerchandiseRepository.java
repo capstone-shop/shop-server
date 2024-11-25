@@ -14,4 +14,6 @@ public interface UserWebMerchandiseRepository extends JpaRepository<Merchandise,
     @Override
     @NonNull
     Page<Merchandise> findAll(Specification<Merchandise> specification, @NonNull Pageable pageable);
+
+    boolean existsById(Long id);
 }
