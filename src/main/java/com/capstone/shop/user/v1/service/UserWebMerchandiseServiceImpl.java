@@ -79,11 +79,10 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         Specification<Merchandise> spec = UserWebMerchandiseSpec
                 .builder()
                 .isOnSale()
-                .isRegisteredInLast2Weeks()
                 .build();
 
-        Pageable top3OrderByCreatedAt = PageRequest.of(0, 3, Direction.DESC, "createdAt");
-        Pageable top3OrderByView = PageRequest.of(0, 3, Direction.DESC, "wish");
+        Pageable top3OrderByCreatedAt = PageRequest.of(0, 4, Direction.DESC, "createdAt");
+        Pageable top3OrderByView = PageRequest.of(0, 4, Direction.DESC, "wish");
 
         Page<Merchandise> recentlyRegistered = userWebMerchandiseRepository.findAll(spec, top3OrderByCreatedAt);
         Page<Merchandise> mostWished = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
