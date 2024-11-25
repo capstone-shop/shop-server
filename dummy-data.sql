@@ -49,7 +49,7 @@ create table user
     phone_number   varchar(15),
     profile_images varchar(512),
     reputation     integer,
-    role           enum ('ADMIN','USER'),
+    role           enum ('ROLE_ADMIN','ROLE_USER'),
     primary key (id)
 ) engine = InnoDB;
 create table user_refresh_token

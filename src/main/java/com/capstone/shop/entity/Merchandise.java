@@ -112,4 +112,8 @@ public class Merchandise extends BaseTimeEntity {
                 .register(register)
                 .build();
     }
+
+    public void addViewCount() {
+        view = view + 1;
+    }
 }
