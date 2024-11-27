@@ -50,13 +50,14 @@ public class AuthController {
         // 회원 가입 성공 API 리턴
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
-    //TODO :AdditionalInfo by OAuth2 signUp
     @PostMapping("/additional-info")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('PREUSER')") // 추가정보 입력받는 API
     public ResponseEntity<?> saveAdditionalInfo(@Valid @RequestBody OAuth2AdditionalInfoRequest oAuth2AdditionalInfoRequest, UserPrincipal userPrincipal){
         authService.saveAdditionalInfo(userPrincipal.getId(), oAuth2AdditionalInfoRequest);
         return ResponseEntity.ok(new ApiResponse(true, "AdditionalInfo saved successfully"));
     }
+
+
 
     @GetMapping("/me")
     public UserMeResponse getCurrentUser(@CurrentUser UserPrincipal userPrincipal){

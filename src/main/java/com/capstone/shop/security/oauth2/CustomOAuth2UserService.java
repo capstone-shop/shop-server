@@ -1,5 +1,6 @@
 package com.capstone.shop.security.oauth2;
 
+import com.capstone.shop.enums.Role;
 import com.capstone.shop.exception.OAuthProviderMissMatchException;
 import com.capstone.shop.enums.AuthProvider;
 import com.capstone.shop.entity.User;
@@ -41,6 +42,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
         AuthProvider authProvider = AuthProvider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(authProvider, user.getAttributes());
+        Role role = Role.ROLE_PREUSER;
         //debug
         System.out.println("User Info: " + userInfo);
         System.out.println("Profile Image: " + userInfo.getProfileImages());
@@ -58,18 +60,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
             updateUser(savedUser, userInfo);
         } else {
-            savedUser = createUser(userInfo, authProvider);
+            savedUser = createUser(userInfo, authProvider, role);
         }
 
         return UserPrincipal.create(savedUser, user.getAttributes());
     }
 
-    private User createUser(OAuth2UserInfo userInfo, AuthProvider authProvider) {
-        LocalDateTime now = LocalDateTime.now();
+    private User createUser(OAuth2UserInfo userInfo, AuthProvider authProvider, Role role) {
         User user = new User(
                 userInfo.getName(),
                 userInfo.getEmail(),
-                authProvider
+                authProvider,
+                role
         );
 
         return userRepository.saveAndFlush(user);

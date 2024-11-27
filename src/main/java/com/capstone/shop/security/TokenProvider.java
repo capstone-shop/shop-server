@@ -15,7 +15,7 @@ public class TokenProvider {
 
     public String createToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        boolean isAdditionalInfoCompleted = userPrincipal.isAdditionalInfoCompleted();
+//        boolean isAdditionalInfoCompleted = userPrincipal.isAdditionalInfoCompleted();
         Long userId = userPrincipal.getId();
 
         Date now = new Date();
@@ -27,7 +27,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .claim("role", userPrincipal.getAuthorities())
-                .claim("isAdditionalInfoCompleted", isAdditionalInfoCompleted)
+//                .claim("isAdditionalInfoCompleted", isAdditionalInfoCompleted)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .setExpiration(tokenExpiry)
                 .compact();
@@ -108,14 +108,14 @@ public class TokenProvider {
         }
     }
 
-    public Boolean getAdditionalInfoCompletedFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(appProperties.getAuth().getTokenSecret())
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get("isAdditionalInfoCompleted", Boolean.class);
-    }
+//    public Boolean getAdditionalInfoCompletedFromToken(String token) {
+//        Claims claims = Jwts.parser()
+//                .setSigningKey(appProperties.getAuth().getTokenSecret())
+//                .parseClaimsJws(token)
+//                .getBody();
+//
+//        return claims.get("isAdditionalInfoCompleted", Boolean.class);
+//    }
 
     public boolean validateToken(String token) {
         try {

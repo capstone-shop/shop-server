@@ -99,7 +99,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
-    private void authenticateUser(String jwt, HttpServletRequest request) {
+    private void authenticateUser(String jwt, HttpServletRequest request) throws IOException { //토큰에서 사용자 id추출하고 authentication
         Long userId = tokenProvider.getUserIdFromToken(jwt);
         UserDetails userDetails = customUserDetailsService.loadUserById(userId);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
