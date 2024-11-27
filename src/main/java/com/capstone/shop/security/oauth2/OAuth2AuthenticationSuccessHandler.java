@@ -3,6 +3,7 @@ import java.util.Date;
 
 import com.capstone.shop.config.AppProperties;
 import com.capstone.shop.entity.UserRefreshToken;
+import com.capstone.shop.enums.Role;
 import com.capstone.shop.exception.BadRequestException;
 import com.capstone.shop.entity.User;
 import com.capstone.shop.security.TokenProvider;
@@ -34,10 +35,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private final JwtTokenUtil jwtTokenUtil;
+
     private final TokenProvider tokenProvider;
     private final AppProperties appProperties;
-    private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
@@ -49,10 +49,27 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         String targetUrl = determineTargetUrl(request, response, authentication);
 
-        // 리다이렉트할 URI 구성 (예: 프론트엔드 URI)
+        // 리다이렉트할 URI 구성 (프론트엔드 uri)
+        String additionalInfoUrl = "http://localhost:3000/additionalInfo";
         String frontEndUri = "http://localhost:3000/oauth2/redirect";
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(frontEndUri);
 
+        if (authentication.getPrincipal() instanceof UserPrincipal) {
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+            // 사용자 정보 조회
+            User user = userRepository.findById(userPrincipal.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없음"));
+
+            // ROLE_PREUSER라면 추가 정보 입력 페이지로 리다이렉트
+            if (user.getRole() == Role.ROLE_PREUSER) {
+                logger.info("ROLE_PREUSER detected, redirecting to additional info page.");
+                if (!response.isCommitted()) {
+                    getRedirectStrategy().sendRedirect(request, response, additionalInfoUrl);
+                }
+                return; // 이후 로직 실행 못하게함
+            }
+        }
         // 기존 targetUrl에서 쿼리 파라미터로 토큰 추가
         String token = extractTokenFromTargetUrl(targetUrl); // targetUrl에서 토큰을 추출하는 메서드 필요
         if (token != null) {
@@ -63,7 +80,7 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
 
         // 응답이 이미 커밋되었는지 확인
         if (response.isCommitted()) {
-            logger.debug("Response has already been committed. Unable to redirect to " + finalRedirectUrl);
+            logger.debug("추가 정보를 입력해야 합니다. " + finalRedirectUrl);
             return;
         }
 
@@ -108,13 +125,11 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
-    //application.properties에 등록해놓은 Redirect uri가 맞는지 확인한다. (app.redirect-uris)
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
         return appProperties.getOauth2().getAuthorizedRedirectUris()
                 .stream()
                 .anyMatch(authorizedRedirectUri -> {
-                    // Only validate host and port. Let the clients use different paths if they want to
                     URI authorizedURI = URI.create(authorizedRedirectUri);
                     if(authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                             && authorizedURI.getPort() == clientRedirectUri.getPort()) {

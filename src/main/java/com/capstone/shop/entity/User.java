@@ -40,12 +40,10 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Column(name = "address", length = 128)
-    @NotNull
     private String address;
 
     @Column(name = "phone_number", length = 15)
     @Pattern(regexp = "^[0-9]{7,15}$", message = "전화번호는 7자 이상 15자 이하의 숫자만 포함해야 합니다.")
-    @NotNull
     private String phoneNumber;
 
     @Column(name = "dealing_count")
@@ -57,7 +55,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "role", length = 20)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Role role = Role.ROLE_USER;
+    private Role role;
 
     @Column(name = "auth_provider", length = 20)
     @Enumerated(EnumType.STRING)
@@ -76,12 +74,13 @@ public class User extends BaseTimeEntity {
     public User(
             @NotNull @Size(max = 12) String name,
             @NotNull @Size(max = 100) String email,
-            @NotNull AuthProvider authProvider
-            //@NotNull Role role
+            @NotNull AuthProvider authProvider,
+            @NotNull Role role
     ) {
         this.name = name;
         this.password = "NO_PASS"; //소셜로그인은 패스워드가 없음
         this.email = email != null ? email : "NO_EMAIL";
         this.authProvider = authProvider;
+        this.role = role;
     }
 }

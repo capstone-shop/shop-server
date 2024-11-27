@@ -1,9 +1,6 @@
 package com.capstone.shop.config;
 
-import com.capstone.shop.security.CustomUserDetailService;
-import com.capstone.shop.security.RestAuthenticationEntryPoint;
-import com.capstone.shop.security.TokenAuthenticationFilter;
-import com.capstone.shop.security.TokenProvider;
+import com.capstone.shop.security.*;
 import com.capstone.shop.security.oauth2.CustomOAuth2UserService;
 import com.capstone.shop.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
@@ -42,6 +39,10 @@ public class SecurityConfig {
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final UserRepository userRepository;
     @Bean
+    public PreuserRedirectFilter preuserRedirectFilter() {
+        return new PreuserRedirectFilter(userRepository);
+    }
+    @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter(tokenProvider, customUserDetailsService, userRefreshTokenRepository,userRepository);
     }
@@ -66,6 +67,8 @@ public class SecurityConfig {
                                 "favicon.ico",
                                 "oauth2/authorize",
                                 "oauth2/authorization/*",
+                                "/additional-info",
+                                "/additionalInfo",
                                 "login/oauth2/code/*",
                                 "api/v1/**",
                                 "static/**",
@@ -106,7 +109,9 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new RestAuthenticationEntryPoint()));
 
-        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); //인증 전에 필터
+        http.addFilterAfter(preuserRedirectFilter(), TokenAuthenticationFilter.class);  //인증 후에 필터
+
         return http.build();
     }
 
