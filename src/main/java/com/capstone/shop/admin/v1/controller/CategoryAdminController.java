@@ -30,17 +30,17 @@ public class CategoryAdminController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "카테고리 수정", description = "기존 카테고리를 수정합니다.")
-    public ResponseEntity<ApiResponse> updateCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
-        ApiResponse response = categoryService.updateCategory(categoryRequestDto);
+    public ResponseEntity<ApiResponse> updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long id) {
+        ApiResponse response = categoryService.updateCategory(categoryRequestDto, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{title}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "카테고리 삭제", description = "카테고리를 삭제합니다.")
-    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String title) {
-        ApiResponse response = categoryService.deleteCategory(title);
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
+        ApiResponse response = categoryService.deleteCategory(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -56,9 +56,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public ApiResponse updateCategory(CategoryRequestDto categoryRequestDto) {
+    public ApiResponse updateCategory(CategoryRequestDto categoryRequestDto, Long id) {
         // 기존 카테고리 찾기
-        Category existingCategory = categoryRepository.findByTitle(categoryRequestDto.getTitle())
+        Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("수정할 카테고리를 찾을 수 없습니다: " + categoryRequestDto.getTitle()));
 
         // 부모 카테고리 처리
@@ -85,15 +85,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public ApiResponse deleteCategory(String categoryTitle) { //id가 인자가 아닌 이유는 카테고리 엔티티가 자기참조 구조라서..
+    public ApiResponse deleteCategory(Long id) { //id가 인자가 아닌 이유는 카테고리 엔티티가 자기참조 구조라서..
         // 삭제할 카테고리 찾기
-        Category categoryToDelete = categoryRepository.findByTitle(categoryTitle)
-                .orElseThrow(() -> new IllegalArgumentException("삭제할 카테고리를 찾을 수 없습니다: " + categoryTitle));
+        Category categoryToDelete = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 카테고리를 찾을 수 없습니다: " + id));
 
         // 자식 카테고리 확인
         List<Category> childCategories = categoryRepository.findByParent(categoryToDelete);
         if (!childCategories.isEmpty()) {
-            throw new IllegalArgumentException("하위 카테고리가 있어 삭제할 수 없습니다: " + categoryTitle);
+            throw new IllegalArgumentException("하위 카테고리가 있어 삭제할 수 없습니다: " + id);
         }
 
         categoryRepository.delete(categoryToDelete);
