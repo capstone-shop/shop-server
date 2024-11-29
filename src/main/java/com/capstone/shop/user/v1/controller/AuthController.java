@@ -76,4 +76,16 @@ public class AuthController {
                 ))
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse> changePassword(@RequestParam Long Id,
+                                                      @RequestParam String currentPassword,
+                                                      @RequestParam String newPassword) {
+        try {
+            authService.changePassword(Id, currentPassword, newPassword);
+            return ResponseEntity.ok(new ApiResponse(true, "비밀번호가 성공적으로 변경되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.capstone.shop.config.AppProperties;
 import com.capstone.shop.exception.ResourceNotFoundException;
 
 import com.capstone.shop.security.UserPrincipal;
+import com.capstone.shop.user.v1.dto.ApiResponse;
 import com.capstone.shop.user.v1.dto.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.dto.SignUpRequest;
 
@@ -85,7 +86,23 @@ public class AuthServiceImpl implements AuthService{
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         user.setAddress(oAuth2AdditionalInfoRequest.getAddress());
         user.setPhoneNumber(oAuth2AdditionalInfoRequest.getPhoneNumber());
+        user.setRole(Role.ROLE_USER);
 
+        userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(Long id, String currentPassword, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 현재 비밀번호 확인
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 새 비밀번호 저장
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 }
