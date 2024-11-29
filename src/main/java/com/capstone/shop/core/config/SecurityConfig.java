@@ -5,7 +5,7 @@ import com.capstone.shop.core.security.oauth2.CustomOAuth2UserService;
 import com.capstone.shop.core.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.capstone.shop.core.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.capstone.shop.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
-import com.capstone.shop.security.*;
+
 import com.capstone.shop.core.domain.repository.UserRefreshTokenRepository;
 import com.capstone.shop.core.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

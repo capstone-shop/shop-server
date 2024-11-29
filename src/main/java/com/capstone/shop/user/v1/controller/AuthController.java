@@ -6,7 +6,6 @@ import com.capstone.shop.user.v1.controller.dto.auth.AccessTokenResponse;
 import com.capstone.shop.user.v1.controller.dto.auth.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.controller.dto.auth.SignInRequest;
 import com.capstone.shop.core.domain.dto.SignUpRequest;
-import com.capstone.shop.user.v1.dto.*;
 import com.capstone.shop.core.exception.ResourceNotFoundException;
 import com.capstone.shop.core.security.CurrentUser;
 import com.capstone.shop.core.security.UserPrincipal;
