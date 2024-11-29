@@ -1,16 +1,18 @@
 package com.capstone.shop.core.domain.repository.merchandise;
 
-import static com.capstone.shop.entity.QMerchandise.merchandise;
-import static com.capstone.shop.entity.QCategory.category;
 
 import com.capstone.shop.core.domain.entity.Category;
 import com.capstone.shop.core.domain.entity.Merchandise;
-import com.capstone.shop.entity.QCategory;
+
+import com.capstone.shop.core.domain.entity.QCategory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import static com.capstone.shop.core.domain.entity.QCategory.category;
+import static com.capstone.shop.core.domain.entity.QMerchandise.merchandise;
 
 @RequiredArgsConstructor
 @Repository
