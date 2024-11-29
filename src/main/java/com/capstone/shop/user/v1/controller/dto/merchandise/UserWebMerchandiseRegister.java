@@ -1,11 +1,11 @@
 package com.capstone.shop.user.v1.controller.dto.merchandise;
 
-import com.capstone.shop.entity.Category;
-import com.capstone.shop.entity.Merchandise;
-import com.capstone.shop.entity.User;
-import com.capstone.shop.enums.MerchandiseQualityState;
-import com.capstone.shop.enums.MerchandiseSaleState;
-import com.capstone.shop.enums.TransactionMethod;
+import com.capstone.shop.core.domain.entity.Category;
+import com.capstone.shop.core.domain.entity.Merchandise;
+import com.capstone.shop.core.domain.entity.User;
+import com.capstone.shop.core.domain.enums.MerchandiseQualityState;
+import com.capstone.shop.core.domain.enums.MerchandiseSaleState;
+import com.capstone.shop.core.domain.enums.TransactionMethod;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

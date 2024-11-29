@@ -1,6 +1,6 @@
 package com.capstone.shop.admin.v1.controller.dto;
 
-import com.capstone.shop.entity.Category;
+import com.capstone.shop.core.domain.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

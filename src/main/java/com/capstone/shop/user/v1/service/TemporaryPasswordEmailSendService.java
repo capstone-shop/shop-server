@@ -1,7 +1,7 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.entity.User;
-import com.capstone.shop.user.v1.repository.UserRepository;
+import com.capstone.shop.core.domain.entity.User;
+import com.capstone.shop.core.domain.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

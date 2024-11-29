@@ -1,9 +1,8 @@
 package com.capstone.shop.admin.v1.controller.dto;
 
-import com.capstone.shop.entity.User;
+import com.capstone.shop.core.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor

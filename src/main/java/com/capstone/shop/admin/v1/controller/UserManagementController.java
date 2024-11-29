@@ -2,9 +2,10 @@ package com.capstone.shop.admin.v1.controller;
 
 import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
-import com.capstone.shop.admin.v1.service.UserManagementService;
-import com.capstone.shop.user.v1.dto.ApiResponse;
-import com.capstone.shop.user.v1.dto.SignUpRequest;
+import com.capstone.shop.admin.v1.service.AdminWebUserService;
+import com.capstone.shop.admin.v1.service.AdminWebUserServiceImpl;
+import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.domain.dto.SignUpRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Admin User Management", description = "관리자 유저 관리 API")
 public class UserManagementController {
 
-    private final UserManagementService userManagementService;
+    private final AdminWebUserService userManagementService;
 
     @Operation(summary = "사용자 생성", description = "새로운 사용자를 생성합니다.")
     @PostMapping("/users")

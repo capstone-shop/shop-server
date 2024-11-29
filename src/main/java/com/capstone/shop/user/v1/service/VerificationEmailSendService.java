@@ -1,6 +1,6 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.user.v1.dto.EmailVerificationInfoDto;
+import com.capstone.shop.user.v1.controller.dto.auth.EmailVerificationInfoDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

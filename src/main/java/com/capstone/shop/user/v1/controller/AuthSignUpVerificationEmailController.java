@@ -1,6 +1,6 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.user.v1.dto.ApiResponse;
+import com.capstone.shop.core.domain.dto.ApiResponse;
 import com.capstone.shop.user.v1.service.VerificationEmailSendService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Email;

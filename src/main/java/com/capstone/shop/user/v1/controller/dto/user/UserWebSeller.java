@@ -1,6 +1,6 @@
 package com.capstone.shop.user.v1.controller.dto.user;
 
-import com.capstone.shop.entity.User;
+import com.capstone.shop.core.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

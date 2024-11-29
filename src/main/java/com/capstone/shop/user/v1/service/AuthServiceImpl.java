@@ -1,20 +1,17 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.config.AppProperties;
-import com.capstone.shop.exception.ResourceNotFoundException;
+import com.capstone.shop.core.exception.ResourceNotFoundException;
 
-import com.capstone.shop.security.UserPrincipal;
-import com.capstone.shop.user.v1.dto.ApiResponse;
-import com.capstone.shop.user.v1.dto.OAuth2AdditionalInfoRequest;
-import com.capstone.shop.user.v1.dto.SignUpRequest;
+import com.capstone.shop.core.security.UserPrincipal;
+import com.capstone.shop.user.v1.controller.dto.auth.OAuth2AdditionalInfoRequest;
+import com.capstone.shop.core.domain.dto.SignUpRequest;
 
-import com.capstone.shop.enums.AuthProvider;
-import com.capstone.shop.enums.Role;
-import com.capstone.shop.entity.User;
-import com.capstone.shop.exception.BadRequestException;
-import com.capstone.shop.security.TokenProvider;
-import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
-import com.capstone.shop.user.v1.repository.UserRepository;
+import com.capstone.shop.core.domain.enums.AuthProvider;
+import com.capstone.shop.core.domain.enums.Role;
+import com.capstone.shop.core.domain.entity.User;
+import com.capstone.shop.core.exception.BadRequestException;
+import com.capstone.shop.core.security.TokenProvider;
+import com.capstone.shop.core.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

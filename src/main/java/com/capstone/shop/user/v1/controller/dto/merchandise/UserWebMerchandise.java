@@ -1,8 +1,8 @@
 package com.capstone.shop.user.v1.controller.dto.merchandise;
 
-import com.capstone.shop.entity.Merchandise;
-import com.capstone.shop.enums.MerchandiseQualityState;
-import com.capstone.shop.enums.MerchandiseSaleState;
+import com.capstone.shop.core.domain.entity.Merchandise;
+import com.capstone.shop.core.domain.enums.MerchandiseQualityState;
+import com.capstone.shop.core.domain.enums.MerchandiseSaleState;
 import com.capstone.shop.user.v1.controller.dto.category.UserWebCategory;
 import com.capstone.shop.user.v1.controller.dto.user.UserWebSeller;
 import java.time.LocalDateTime;
