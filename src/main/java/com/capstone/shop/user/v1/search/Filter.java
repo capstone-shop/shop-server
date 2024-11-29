@@ -1,7 +1,7 @@
 package com.capstone.shop.user.v1.search;
 
-import com.capstone.shop.enums.MerchandiseQualityState;
-import com.capstone.shop.enums.TransactionMethod;
+import com.capstone.shop.core.domain.enums.MerchandiseQualityState;
+import com.capstone.shop.core.domain.enums.TransactionMethod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

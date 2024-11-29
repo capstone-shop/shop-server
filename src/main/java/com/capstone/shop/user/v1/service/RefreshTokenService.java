@@ -1,8 +1,8 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.entity.User;
-import com.capstone.shop.entity.UserRefreshToken;
-import com.capstone.shop.user.v1.repository.UserRefreshTokenRepository;
+import com.capstone.shop.core.domain.entity.User;
+import com.capstone.shop.core.domain.entity.UserRefreshToken;
+import com.capstone.shop.core.domain.repository.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

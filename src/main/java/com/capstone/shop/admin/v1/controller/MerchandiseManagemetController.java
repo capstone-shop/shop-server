@@ -1,8 +1,8 @@
 package com.capstone.shop.admin.v1.controller;
 
 import com.capstone.shop.admin.v1.controller.dto.MerchandiseUpdateRequestDto;
-import com.capstone.shop.admin.v1.service.UserMerchandiseServiceImpl;
-import com.capstone.shop.user.v1.dto.ApiResponse;
+import com.capstone.shop.admin.v1.service.AdminWebMerchandiseServiceImpl;
+import com.capstone.shop.core.domain.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Admin", description = "관리자 상품 관리 API")
 public class MerchandiseManagemetController {
-    private final UserMerchandiseServiceImpl userMerchandiseService;
+    private final AdminWebMerchandiseServiceImpl userMerchandiseService;
 
     @PutMapping
     @Operation(summary = "상품정보 수정", description = "기존 상품정보를 수정합니다.")

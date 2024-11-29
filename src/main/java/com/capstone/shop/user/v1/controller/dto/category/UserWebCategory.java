@@ -1,6 +1,6 @@
 package com.capstone.shop.user.v1.controller.dto.category;
 
-import com.capstone.shop.entity.Category;
+import com.capstone.shop.core.domain.entity.Category;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.entity.Category;
+import com.capstone.shop.core.domain.entity.Category;
 import com.capstone.shop.user.v1.controller.dto.category.UserWebCategory;
-import com.capstone.shop.user.v1.repository.UserWebCategoryRepository;
+import com.capstone.shop.core.domain.repository.CategoryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserWebCategoryServiceImpl implements UserWebCategoryService {
 
-    private final UserWebCategoryRepository userWebCategoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<UserWebCategory> getCategory() {
-        List<Category> result = userWebCategoryRepository.findAllByParentOrderBySequenceAsc(null);
+        List<Category> result = categoryRepository.findAllByParentOrderBySequenceAsc(null);
         return UserWebCategory.entityListToDtoList(result);
     }
 
     @Override
     public List<UserWebCategory> getCategory(long categoryId) {
-        List<Category> result = userWebCategoryRepository.findAllByParentIdOrderBySequenceAsc(categoryId);
+        List<Category> result = categoryRepository.findAllByParentIdOrderBySequenceAsc(categoryId);
         return UserWebCategory.entityListToDtoList(result);
     }
 }

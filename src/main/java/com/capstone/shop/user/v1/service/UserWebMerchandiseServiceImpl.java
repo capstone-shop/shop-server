@@ -1,21 +1,20 @@
 package com.capstone.shop.user.v1.service;
 
-import com.capstone.shop.entity.Category;
-import com.capstone.shop.entity.User;
-import com.capstone.shop.entity.Wish;
-import com.capstone.shop.security.CurrentUser;
+import com.capstone.shop.core.domain.entity.Category;
+import com.capstone.shop.core.domain.entity.User;
+import com.capstone.shop.core.domain.entity.Wish;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandise;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
-import com.capstone.shop.user.v1.dto.ApiResponse;
-import com.capstone.shop.user.v1.repository.UserWebCategoryRepository;
-import com.capstone.shop.user.v1.repository.WishRepository;
-import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseQueryRepository;
-import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseRepository;
-import com.capstone.shop.entity.Merchandise;
-import com.capstone.shop.user.v1.repository.merchandise.UserWebMerchandiseSpec;
+import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.domain.repository.CategoryRepository;
+import com.capstone.shop.core.domain.repository.WishRepository;
+import com.capstone.shop.core.domain.repository.merchandise.MerchandiseQueryRepository;
+import com.capstone.shop.core.domain.repository.merchandise.MerchandiseRepository;
+import com.capstone.shop.core.domain.entity.Merchandise;
+import com.capstone.shop.core.domain.repository.merchandise.MerchandiseSpec;
 import com.capstone.shop.user.v1.search.Filter;
 
 import java.time.LocalDateTime;
@@ -33,20 +32,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService {
 
-    private final UserWebMerchandiseRepository userWebMerchandiseRepository;
-    private final UserWebCategoryRepository userWebCategoryRepository;
-    private final UserWebMerchandiseQueryRepository userWebMerchandiseQueryRepository;
+    private final MerchandiseRepository merchandiseRepository;
+    private final CategoryRepository categoryRepository;
+    private final MerchandiseQueryRepository userWebMerchandiseQueryRepository;
     private final WishRepository wishRepository;
 
     @Override
     public UserWebMerchandisePagination getMerchandise(String search, Pageable pageable, Filter filter) {
-        Specification<Merchandise> spec = UserWebMerchandiseSpec
+        Specification<Merchandise> spec = MerchandiseSpec
                 .builder()
                 .addFilterCriteria(filter)
                 .addSearchString(search)
                 .build();
 
-        Page<Merchandise> result = userWebMerchandiseRepository.findAll(spec, pageable);
+        Page<Merchandise> result = merchandiseRepository.findAll(spec, pageable);
 
         List<UserWebMerchandise> merchandiseList = UserWebMerchandise.entityPageToDtoList(result);
 
@@ -56,14 +55,14 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     @Override
     public UserWebMerchandiseDetail getMerchandise(Long merchandiseId) {
 
-        Merchandise merchandise = userWebMerchandiseRepository.findById(merchandiseId).orElseThrow();
+        Merchandise merchandise = merchandiseRepository.findById(merchandiseId).orElseThrow();
         List<UserWebMerchandise> list = userWebMerchandiseQueryRepository.findRelatedMerchandises(merchandise)
                 .stream()
                 .map(UserWebMerchandise::new)
                 .toList();
 
         merchandise.addViewCount();
-        merchandise = userWebMerchandiseRepository.save(merchandise);
+        merchandise = merchandiseRepository.save(merchandise);
 
         return new UserWebMerchandiseDetail(new UserWebMerchandise(merchandise), list);
     }
@@ -73,20 +72,20 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         // 추후 현재 로그인한 유저를 가져와야 함.
         User user = User.builder().id(id).build();
 
-        Optional<Category> categoryOp = userWebCategoryRepository.findById(Long.valueOf(request.getCategoryId()));
+        Optional<Category> categoryOp = categoryRepository.findById(Long.valueOf(request.getCategoryId()));
         if (categoryOp.isEmpty())
             return false;
 
         Category category = categoryOp.get();
         Merchandise entity = request.toEntity(category, user);
 
-        entity = userWebMerchandiseRepository.save(entity);
+        entity = merchandiseRepository.save(entity);
         return entity.getId() != null;
     }
 
     @Override
     public HomeMerchandiseList getHomeMerchandiseList() {
-        Specification<Merchandise> spec = UserWebMerchandiseSpec
+        Specification<Merchandise> spec = MerchandiseSpec
                 .builder()
                 .isOnSale()
                 .build();
@@ -94,8 +93,8 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         Pageable top3OrderByCreatedAt = PageRequest.of(0, 4, Direction.DESC, "createdAt");
         Pageable top3OrderByView = PageRequest.of(0, 4, Direction.DESC, "wish");
 
-        Page<Merchandise> recentlyRegistered = userWebMerchandiseRepository.findAll(spec, top3OrderByCreatedAt);
-        Page<Merchandise> mostWished = userWebMerchandiseRepository.findAll(spec, top3OrderByView);
+        Page<Merchandise> recentlyRegistered = merchandiseRepository.findAll(spec, top3OrderByCreatedAt);
+        Page<Merchandise> mostWished = merchandiseRepository.findAll(spec, top3OrderByView);
 
         List<UserWebMerchandise> recentlyRegisteredList = UserWebMerchandise.entityPageToDtoList(recentlyRegistered);
         List<UserWebMerchandise> mostWishedList = UserWebMerchandise.entityPageToDtoList(mostWished);
@@ -105,7 +104,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
     @Override
     public ApiResponse WishCount(Long id, User user){
-        Merchandise merchandise = userWebMerchandiseRepository.findById(id)
+        Merchandise merchandise = merchandiseRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("상품이 없어요"));
         Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
         if (existingWish.isPresent()) {//이미 찜을 했다면?
@@ -122,7 +121,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
                 .build();
 
         wishRepository.save(newWish);
-        userWebMerchandiseRepository.save(merchandise);
+        merchandiseRepository.save(merchandise);
 
         return new ApiResponse(true, "찜 횟수 증가 및 위시리스트에 추가 성공");
 

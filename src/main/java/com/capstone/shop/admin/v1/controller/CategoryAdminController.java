@@ -3,8 +3,8 @@ package com.capstone.shop.admin.v1.controller;
 import com.capstone.shop.admin.v1.controller.dto.CategoryRequestDto;
 import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.CategoryResponseDto;
 import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.CategoryTreeResponseDto;
-import com.capstone.shop.admin.v1.service.CategoryServiceImpl;
-import com.capstone.shop.user.v1.dto.ApiResponse;
+import com.capstone.shop.admin.v1.service.AdminWebCategoryServiceImpl;
+import com.capstone.shop.core.domain.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Admin", description = "관리자 API")
 public class CategoryAdminController {
-    private final CategoryServiceImpl categoryService;
+    private final AdminWebCategoryServiceImpl categoryService;
 
     @PostMapping
     @Operation(summary = "카테고리 생성", description = "새로운 카테고리를 생성합니다.")

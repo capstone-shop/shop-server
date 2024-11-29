@@ -1,21 +1,22 @@
 package com.capstone.shop.user.v1.controller;
 
-import com.capstone.shop.admin.v1.controller.dto.UserMeResponse;
-import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
+import com.capstone.shop.core.domain.dto.UserMeResponse;
+import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.user.v1.controller.dto.auth.AccessTokenResponse;
+import com.capstone.shop.user.v1.controller.dto.auth.OAuth2AdditionalInfoRequest;
+import com.capstone.shop.user.v1.controller.dto.auth.SignInRequest;
+import com.capstone.shop.core.domain.dto.SignUpRequest;
 import com.capstone.shop.user.v1.dto.*;
-import com.capstone.shop.entity.User;
-import com.capstone.shop.exception.ResourceNotFoundException;
-import com.capstone.shop.security.CurrentUser;
-import com.capstone.shop.security.UserPrincipal;
-import com.capstone.shop.user.v1.repository.UserRepository;
+import com.capstone.shop.core.exception.ResourceNotFoundException;
+import com.capstone.shop.core.security.CurrentUser;
+import com.capstone.shop.core.security.UserPrincipal;
+import com.capstone.shop.core.domain.repository.UserRepository;
 import com.capstone.shop.user.v1.service.AuthServiceImpl;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
