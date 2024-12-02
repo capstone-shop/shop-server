@@ -63,8 +63,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/",
+                                "/ws/**", "/chat/**",
+
+                                "/api/v1/chat/**",
                                 "local/redirect",
                                 "signin",
+                                "/api/v1/merchandise/*",
                                 "signup",
                                 "favicon.ico",
                                 "oauth2/authorize",
