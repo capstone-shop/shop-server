@@ -2,9 +2,9 @@ package com.capstone.shop.admin.v1.service;
 
 import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
+import com.capstone.shop.core.domain.dto.AdminSignUpRequest;
 import com.capstone.shop.core.domain.entity.User;
 import com.capstone.shop.core.domain.dto.ApiResponse;
-import com.capstone.shop.core.domain.dto.SignUpRequest;
 import com.capstone.shop.core.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -19,7 +19,7 @@ public class AdminWebUserServiceImpl implements AdminWebUserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
-    public ApiResponse createUser(SignUpRequest signUpRequest) {
+    public ApiResponse createUser(AdminSignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + signUpRequest.getEmail());
         }
@@ -44,7 +44,7 @@ public class AdminWebUserServiceImpl implements AdminWebUserService{
 
 
     @Override
-    public ApiResponse updateUser(SignUpRequest signUpRequest,Long id) {
+    public ApiResponse updateUser(AdminSignUpRequest signUpRequest,Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("유저 ID가 존재하지 않습니다: " + signUpRequest.getEmail()));
 

@@ -9,9 +9,9 @@ import java.util.List;
 
 @Service
 public interface AdminWebCategoryService {
-    ApiResponse createCategory(CategoryRequestDto categoryRequestDto);
+    ApiResponse createCategory(Long userId, CategoryRequestDto categoryRequestDto);
 
-    ApiResponse updateCategory(CategoryRequestDto categoryRequestDto,Long id);
+    ApiResponse updateCategory(Long userId, CategoryRequestDto categoryRequestDto,Long id);
 
     ApiResponse deleteCategory(Long id);
 

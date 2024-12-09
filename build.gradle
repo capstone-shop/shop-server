@@ -24,66 +24,59 @@ repositories {
 }
 
 dependencies {
-	//보안 관련 의존성
+	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	//스프링 웹 어플리케이션
+	// Web Application
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	//유효성 검사
-	implementation 'jakarta.validation:jakarta.validation-api:2.0.1' // @Pattern
+	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-	//db 쿼리 관련 의존성
+	// Database
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	//query dsl 관련 의존성
+	// QueryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
 	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 	implementation 'org.springframework:spring-context'
 
-
-	//Swagger
+	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-	implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 
-	//SMTP
+	// SMTP
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	//webSocket
+	// WebSocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-
-	//lombok
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	//테스트 관련 의존성
+	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
-	// mysql 연결 드라이버
+	// MySQL Driver
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'mysql:mysql-connector-java:8.0.32' // MySQL JDBC 드라이버 추가
 
-	// 테스트용 db
+	// H2 for testing
 	runtimeOnly 'com.h2database:h2'
 }
 
 jar {
-	//~SHAPSHOT-plain.jar 파일 안 생기게 막음
 	enabled = false
-	//jar 파일 생성 경로 지정
 	destinationDirectory = file("./build/libs")
 }
 

@@ -4,7 +4,6 @@ import com.capstone.shop.core.exception.ResourceNotFoundException;
 
 import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.user.v1.controller.dto.auth.OAuth2AdditionalInfoRequest;
-import com.capstone.shop.core.domain.dto.SignUpRequest;
 
 import com.capstone.shop.core.domain.enums.AuthProvider;
 import com.capstone.shop.core.domain.enums.Role;
@@ -12,6 +11,7 @@ import com.capstone.shop.core.domain.entity.User;
 import com.capstone.shop.core.exception.BadRequestException;
 import com.capstone.shop.core.security.TokenProvider;
 import com.capstone.shop.core.domain.repository.UserRepository;
+import com.capstone.shop.user.v1.controller.dto.auth.SignUpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,19 +55,19 @@ public class AuthServiceImpl implements AuthService{
         return tokens;
     }
     @Override
-    public SignUpRequest signUpUser(String name, String email, String password, AuthProvider authProvider, String address, String phoneNumber, String profileImages, Role role) {
-        if(userRepository.existsByEmail(email)){
+    public SignUpRequest signUpUser(SignUpRequest signUpRequest) {
+        if(userRepository.existsByEmail(signUpRequest.getEmail())){
             throw new BadRequestException("Email address already Exist.");
         }
 
         User user = User.builder()
-                .name(name)
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .address(address) // 주소 필드 추가
-                .phoneNumber(phoneNumber) // 전화번호 필드 추가
+                .name(signUpRequest.getName())
+                .email(signUpRequest.getEmail())
+                .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .address(signUpRequest.getAddress()) // 주소 필드 추가
+                .phoneNumber(signUpRequest.getPhone_number()) // 전화번호 필드 추가
                 .authProvider(AuthProvider.local) // authProvider 필드 추가
-                .profileImages(profileImages) // 프로필 이미지 필드 추가
+                .profileImages(signUpRequest.getProfileImages()) // 프로필 이미지 필드 추가
                 .role(Role.ROLE_USER) // 역할 필드 추가
                 .build();
         User savedUser = userRepository.save(user);

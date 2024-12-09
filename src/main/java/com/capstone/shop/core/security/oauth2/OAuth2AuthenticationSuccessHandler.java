@@ -44,8 +44,8 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         // 리다이렉트할 URI 구성 (프론트엔드 uri)
-        String additionalInfoUrl = "http://localhost:3000/additionalInfo";
-        String frontEndUri = "http://localhost:3000/oauth2/redirect";
+        String additionalInfoUrl = "https://induk.shop//additionalInfo";
+        String frontEndUri = "https://induk.shop//oauth2/redirect";
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(frontEndUri);
 
         if (authentication.getPrincipal() instanceof UserPrincipal) {

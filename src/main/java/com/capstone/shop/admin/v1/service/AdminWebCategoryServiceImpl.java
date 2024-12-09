@@ -8,7 +8,10 @@ import com.capstone.shop.core.domain.entity.Category;
 import com.capstone.shop.core.domain.entity.User;
 import com.capstone.shop.core.domain.repository.CategoryRepository;
 import com.capstone.shop.core.domain.repository.UserRepository;
+import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,15 +26,15 @@ public class AdminWebCategoryServiceImpl implements AdminWebCategoryService {
 
     @Override
     @Transactional
-    public ApiResponse createCategory(CategoryRequestDto categoryRequestDto) {
+    public ApiResponse createCategory(Long userId, CategoryRequestDto categoryRequestDto) {
         Category parentCategory = null;
-        String parentTitle = categoryRequestDto.getParent();
+        Long parentId = categoryRequestDto.getParentId();
         String title = categoryRequestDto.getTitle();
 
         // 부모 카테고리 찾기
-        if (parentTitle != null && !parentTitle.isEmpty()) {
-            parentCategory = categoryRepository.findByTitle(parentTitle)
-                    .orElseThrow(() -> new IllegalArgumentException("부모 카테고리가 존재하지 않습니다: " + parentTitle));
+        if (parentId != null) {
+            parentCategory = categoryRepository.findById(parentId)
+                    .orElseThrow(() -> new IllegalArgumentException("부모 카테고리가 존재하지 않습니다: " + parentId));
         }
 
         // 제목 중복 검사
@@ -39,8 +42,7 @@ public class AdminWebCategoryServiceImpl implements AdminWebCategoryService {
             throw new IllegalArgumentException("이미 존재하는 카테고리 제목입니다: " + title);
         }
 
-        User user = userRepository.findByName(categoryRequestDto.getRegister())
-                .orElseThrow(() -> new IllegalArgumentException("작성자를 찾을 수 없음"));
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("no user"));
 
         Category category = Category.builder()
                 .title(title)
@@ -56,21 +58,20 @@ public class AdminWebCategoryServiceImpl implements AdminWebCategoryService {
 
     @Override
     @Transactional
-    public ApiResponse updateCategory(CategoryRequestDto categoryRequestDto, Long id) {
+    public ApiResponse updateCategory(Long userId, CategoryRequestDto categoryRequestDto, Long id) {
         // 기존 카테고리 찾기
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("수정할 카테고리를 찾을 수 없습니다: " + categoryRequestDto.getTitle()));
 
         // 부모 카테고리 처리
         Category parentCategory = null;
-        if (categoryRequestDto.getParent() != null && !categoryRequestDto.getParent().isEmpty()) {
-            parentCategory = categoryRepository.findByTitle(categoryRequestDto.getParent())
-                    .orElseThrow(() -> new IllegalArgumentException("부모 카테고리가 존재하지 않습니다: " + categoryRequestDto.getParent()));
+        if (categoryRequestDto.getParentId() != null) {
+            parentCategory = categoryRepository.findById(categoryRequestDto.getParentId())
+                    .orElseThrow(() -> new IllegalArgumentException("부모 카테고리가 존재하지 않습니다: " + categoryRequestDto.getParentId()));
         }
 
         // 작성자 확인
-        User user = userRepository.findByName(categoryRequestDto.getRegister())
-                .orElseThrow(() -> new IllegalArgumentException("작성자를 찾을 수 없음"));
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("no user"));
 
         // 카테고리 정보 업데이트
         existingCategory.changeParentCategory(parentCategory);

@@ -4,8 +4,8 @@ import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
 import com.capstone.shop.admin.v1.service.AdminWebUserService;
 import com.capstone.shop.admin.v1.service.AdminWebUserServiceImpl;
+import com.capstone.shop.core.domain.dto.AdminSignUpRequest;
 import com.capstone.shop.core.domain.dto.ApiResponse;
-import com.capstone.shop.core.domain.dto.SignUpRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,8 +29,8 @@ public class UserManagementController {
     @Operation(summary = "사용자 생성", description = "새로운 사용자를 생성합니다.")
     @PostMapping("/users")
     public ResponseEntity<ApiResponse> createUser(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "사용자 생성 요청 데이터", required = true, content = @Content(schema = @Schema(implementation = SignUpRequest.class)))
-            @RequestBody SignUpRequest signUpRequest) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "사용자 생성 요청 데이터", required = true, content = @Content(schema = @Schema(implementation = AdminSignUpRequest.class)))
+            @RequestBody AdminSignUpRequest signUpRequest) {
         ApiResponse response = userManagementService.createUser(signUpRequest);
         return ResponseEntity.ok(response);
     }
@@ -43,9 +43,9 @@ public class UserManagementController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "사용자 수정 요청 데이터",
                     required = true,
-                    content = @Content(schema = @Schema(implementation = SignUpRequest.class))
+                    content = @Content(schema = @Schema(implementation = AdminSignUpRequest.class))
             )
-            @RequestBody SignUpRequest signUpRequest,
+            @RequestBody AdminSignUpRequest signUpRequest,
             @PathVariable Long id
     ) {
         // id로 사용자 존재 여부 확인

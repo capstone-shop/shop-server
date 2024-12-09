@@ -5,6 +5,8 @@ import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.CategoryRe
 import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.CategoryTreeResponseDto;
 import com.capstone.shop.admin.v1.service.AdminWebCategoryServiceImpl;
 import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.security.CurrentUser;
+import com.capstone.shop.core.security.UserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +27,17 @@ public class CategoryAdminController {
 
     @PostMapping
     @Operation(summary = "카테고리 생성", description = "새로운 카테고리를 생성합니다.")
-    public ResponseEntity<ApiResponse> createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
-        ApiResponse response = categoryService.createCategory(categoryRequestDto);
+    public ResponseEntity<ApiResponse> createCategory(@CurrentUser UserPrincipal userPrincipal, @RequestBody CategoryRequestDto categoryRequestDto) {
+        Long userId = userPrincipal.getId();
+        ApiResponse response = categoryService.createCategory(userId, categoryRequestDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "카테고리 수정", description = "기존 카테고리를 수정합니다.")
-    public ResponseEntity<ApiResponse> updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long id) {
-        ApiResponse response = categoryService.updateCategory(categoryRequestDto, id);
+    public ResponseEntity<ApiResponse> updateCategory(@CurrentUser UserPrincipal userPrincipal, @RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long id) {
+        Long userId = userPrincipal.getId();
+        ApiResponse response = categoryService.updateCategory(userId,categoryRequestDto, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
