@@ -23,11 +23,11 @@ public class ChatRoom { //채팅방을 찾는건 사용자들의 이메일 페�
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user1_id")
-    private User user1; // 사용자 1
+    private User seller; // 사용자 1
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user2_id")
-    private User user2; // 사용자 2
+    private User buyer; // 사용자 2
 
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
@@ -35,4 +35,12 @@ public class ChatRoom { //채팅방을 찾는건 사용자들의 이메일 페�
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public static ChatRoom create(User seller, User buyer) {  //이거 생성자 메서드가 아닌 정적 메서드로 만든 이유는 LocalDateTime같은것도 넣어야 하기 때문 -> 가독성저하
+        return ChatRoom.builder()
+                .seller(seller)
+                .buyer(buyer)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 }

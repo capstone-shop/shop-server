@@ -9,11 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryRequestDto {
+    private Long id;
+
     private String title;
 
     private boolean isLeaf;
 
-    private String parent;
+    private Long parentId;
 
     private Long sequence;
 
@@ -21,6 +23,7 @@ public class CategoryRequestDto {
 
     public Category toEntity(Category parentCategory) {
         return Category.builder()
+                .id(this.id)
                 .title(this.title)
                 .isLeaf(this.isLeaf)
                 .parent(parentCategory)  // 부모 카테고리를 설정
@@ -29,9 +32,10 @@ public class CategoryRequestDto {
 
     public static CategoryRequestDto fromEntity(Category category) {
         return new CategoryRequestDto(
+                category.getId(),
                 category.getTitle(),
                 category.isLeaf(),  //이거 getIsLeaf()랑 같음
-                category.getParent() != null ? category.getParent().getTitle() : null,
+                category.getParent().getId() != null ? category.getParent().getId() : null,
                 category.getSequence(),
                 category.getRegister().toString()
         );

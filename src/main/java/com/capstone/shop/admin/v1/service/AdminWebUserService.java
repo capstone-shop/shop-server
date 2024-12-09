@@ -2,13 +2,13 @@ package com.capstone.shop.admin.v1.service;
 
 import com.capstone.shop.admin.v1.controller.dto.PaginatedResponse;
 import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
+import com.capstone.shop.core.domain.dto.AdminSignUpRequest;
 import com.capstone.shop.core.domain.dto.ApiResponse;
-import com.capstone.shop.core.domain.dto.SignUpRequest;
 
 public interface AdminWebUserService {
-    ApiResponse createUser(SignUpRequest signUpRequest);
+    ApiResponse createUser(AdminSignUpRequest adminSignUpRequest);
 
-    ApiResponse updateUser(SignUpRequest signUpRequest,Long id);
+    ApiResponse updateUser(AdminSignUpRequest adminSignUpRequest,Long id);
 
     UserResponseDto getUser(Long id);
 

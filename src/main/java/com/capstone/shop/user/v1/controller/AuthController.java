@@ -5,11 +5,11 @@ import com.capstone.shop.core.domain.dto.ApiResponse;
 import com.capstone.shop.user.v1.controller.dto.auth.AccessTokenResponse;
 import com.capstone.shop.user.v1.controller.dto.auth.OAuth2AdditionalInfoRequest;
 import com.capstone.shop.user.v1.controller.dto.auth.SignInRequest;
-import com.capstone.shop.core.domain.dto.SignUpRequest;
 import com.capstone.shop.core.exception.ResourceNotFoundException;
 import com.capstone.shop.core.security.CurrentUser;
 import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.core.domain.repository.UserRepository;
+import com.capstone.shop.user.v1.controller.dto.auth.SignUpRequest;
 import com.capstone.shop.user.v1.service.AuthServiceImpl;
 
 import jakarta.validation.Valid;
@@ -38,14 +38,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         authService.signUpUser(
-                signUpRequest.getName(),
-                signUpRequest.getEmail(),
-                signUpRequest.getPassword(),
-                signUpRequest.getAuthProvider(),
-                signUpRequest.getAddress(),
-                signUpRequest.getPhone_number(), //이거 언더바 쓴 이유는 json이랑 통일하기 위해서
-                signUpRequest.getProfileImages(),
-                signUpRequest.getRole()
+                signUpRequest
         );
         // 회원 가입 성공 API 리턴
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));

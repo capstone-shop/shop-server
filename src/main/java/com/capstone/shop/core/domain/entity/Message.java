@@ -35,10 +35,6 @@ public class Message {
         this.isRead = true;
     }
 
-//    public void setChatRoom(Long roomId){
-//        this.chatRoom = new ChatRoom(roomId);
-//    }
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

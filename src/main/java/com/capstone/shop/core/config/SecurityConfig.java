@@ -63,19 +63,25 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/",
-                                "/ws/**", "/chat/**",
-
+                                "/ws/**",
+                                "/app/**",
+                                "ws/**",
+                                "wss/**",
+                                "/chat/**",
+                                "/chat/websocket/**",
                                 "/api/v1/chat/**",
+                                "/api/v1/chat/**",
+                                "/api/v1/chat/create",
                                 "local/redirect",
-                                "signin",
+                                "/signin",
                                 "/api/v1/merchandise/*",
-                                "signup",
-                                "favicon.ico",
-                                "oauth2/authorize",
-                                "oauth2/authorization/*",
+                                "/signup",
+                                "/favicon.ico",
+                                "/oauth2/authorize",
+                                "/oauth2/authorization/*",
                                 "/additional-info",
                                 "/additionalInfo",
-                                "login/oauth2/code/*",
+                                "/login/oauth2/code/*",
                                 "api/v1/**",
                                 "static/**",
                                 "assets/**"
@@ -93,6 +99,8 @@ public class SecurityConfig {
                         .permitAll()
                         // api/v1/admin으로 시작하는 요청은 ADMIN 역할을 가진 사용자만 접근 가능
 //                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        //testing
+                        //        .anyRequest().permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->
