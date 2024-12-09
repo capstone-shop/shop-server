@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class AdminSignUpRequest {
+    private Long id;
     private String name;
     private String email;
     private String password;
@@ -30,6 +31,7 @@ public class AdminSignUpRequest {
 //
     public static AdminSignUpRequest fromEntity(User user) {
         return AdminSignUpRequest.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .password(user.getPassword())
