@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 public class UserWebMerchandiseDetail {
     private UserWebMerchandise merchandise;
-    private List<UserWebMerchandise> relatedMerchandises;
+    private List<UserWebMerchandise> relatedMerchandise;
 }
