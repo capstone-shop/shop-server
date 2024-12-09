@@ -2,7 +2,9 @@ package com.capstone.shop.core.domain.repository.merchandise;
 
 import com.capstone.shop.core.domain.entity.Merchandise;
 import com.capstone.shop.user.v1.search.Filter;
-import com.capstone.shop.user.v1.search.Filter.*;
+import com.capstone.shop.user.v1.search.FilterOption;
+import com.capstone.shop.user.v1.search.FilterType;
+import com.capstone.shop.user.v1.search.QueryType;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
