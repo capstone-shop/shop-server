@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface AuthService {
     Map<String, String> signIn(String email, String password);
-    SignUpRequest signUpUser(SignUpRequest signUpRequest);
+    ApiResponse signUpUser(SignUpRequest signUpRequest);
     ApiResponse updateMyInfo(SignUpRequest signUpRequest, Long id);
 
     UserMeResponse getMyInfo(Long id);

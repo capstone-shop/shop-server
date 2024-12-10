@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService{
         return tokens;
     }
     @Override
-    public SignUpRequest signUpUser(SignUpRequest signUpRequest) {
+    public ApiResponse signUpUser(SignUpRequest signUpRequest) {
         if(userRepository.existsByEmail(signUpRequest.getEmail())){
             throw new BadRequestException("Email address already Exist.");
         }
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService{
                 .build();
         User savedUser = userRepository.save(user);
 
-        return SignUpRequest.fromEntity(savedUser);
+        return new ApiResponse(true, "유저 생성 성공");
 
     }
 
