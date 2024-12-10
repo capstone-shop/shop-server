@@ -73,7 +73,7 @@ public class AuthController {
 
     @PostMapping("/additional-info")
     @PreAuthorize("hasRole('PREUSER')") // 추가정보 입력받는 API
-    public ResponseEntity<?> saveAdditionalInfo(@Valid @RequestBody OAuth2AdditionalInfoRequest oAuth2AdditionalInfoRequest, UserPrincipal userPrincipal){
+    public ResponseEntity<?> saveAdditionalInfo(@Valid @RequestBody OAuth2AdditionalInfoRequest oAuth2AdditionalInfoRequest,@CurrentUser UserPrincipal userPrincipal){
         authService.saveAdditionalInfo(userPrincipal.getId(), oAuth2AdditionalInfoRequest);
         return ResponseEntity.ok(new ApiResponse(true, "AdditionalInfo saved successfully"));
     }
