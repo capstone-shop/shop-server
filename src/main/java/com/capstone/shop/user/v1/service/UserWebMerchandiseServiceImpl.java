@@ -122,7 +122,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         }
         merchandiseRepository.save(merchandise);
 
-        return new UserWebWish(id, existingWish.isPresent());
+        return new UserWebWish(id, existingWish.isEmpty());
     }
 
     @Override
