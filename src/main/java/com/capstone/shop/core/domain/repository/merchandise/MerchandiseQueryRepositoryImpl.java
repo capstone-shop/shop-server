@@ -87,7 +87,14 @@ public class MerchandiseQueryRepositoryImpl implements MerchandiseQueryRepositor
                 .limit(page.getPageSize())
                 .fetch();
 
-        return new UserWebMerchandisePagination(merchandiseList);
+        long totalCount = queryFactory
+                .select(wish.count())
+                .from(wish)
+                .where(wish.user.id.eq(id))
+                .fetch().stream().findFirst().orElse(0L);
+        long totalPage = (totalCount + page.getPageSize() - 1) / page.getPageSize();
+
+        return new UserWebMerchandisePagination(merchandiseList, (int) totalPage);
     }
 
     @Override
@@ -102,6 +109,13 @@ public class MerchandiseQueryRepositoryImpl implements MerchandiseQueryRepositor
                 .limit(page.getPageSize())
                 .fetch();
 
-        return new UserWebMerchandisePagination(merchandiseList);
+        long totalCount = queryFactory
+                .select(merchandise.count())
+                .from(merchandise)
+                .where(merchandise.register.id.eq(id))
+                .fetch().stream().findFirst().orElse(0L);
+        long totalPage = (totalCount + page.getPageSize() - 1) / page.getPageSize();
+
+        return new UserWebMerchandisePagination(merchandiseList, (int) totalPage);
     }
 }
