@@ -15,6 +15,7 @@ import com.capstone.shop.core.domain.repository.merchandise.MerchandiseQueryRepo
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseRepository;
 import com.capstone.shop.core.domain.entity.Merchandise;
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseSpec;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
 import com.capstone.shop.user.v1.search.Filter;
 
 import java.time.LocalDateTime;
@@ -103,28 +104,42 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     }
 
     @Override
-    public ApiResponse WishCount(Long id, User user){
+    public ApiResponse toggleWish(Long id, Long userId){
         Merchandise merchandise = merchandiseRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("상품이 없어요"));
+        User user = User.builder().id(userId).build();
+
         Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
+
+        String msg;
+
         if (existingWish.isPresent()) {//이미 찜을 했다면?
             merchandise.subWishCount();    //찜 목록이랑 횟수 감소
-            wishRepository.delete(existingWish.get());
-        } else{
-            merchandise.addWishCount(); //아니라면 추가
+            wishRepository.delete(existingWish.get()); //찜 테이블에서 삭제
+            msg = "찜 횟수 감소 및 위시리스트에서 삭제 성공";
+        } else {
+            merchandise.addWishCount(); //아니라면 상품 찜 갯수에 1 추가하고
+            Wish newWish = Wish.builder()
+                    .user(user)
+                    .merchandise(merchandise)
+                    .wishDate(LocalDateTime.now())
+                    .build();
+            wishRepository.save(newWish); //찜 테이블에 추가
+            msg = "찜 횟수 증가 및 위시리스트에 추가 성공";
         }
-
-        Wish newWish = Wish.builder()
-                .user(user)
-                .merchandise(merchandise)
-                .wishDate(LocalDateTime.now())  //찜 날짜임
-                .build();
-
-        wishRepository.save(newWish);
         merchandiseRepository.save(merchandise);
 
-        return new ApiResponse(true, "찜 횟수 증가 및 위시리스트에 추가 성공");
+        return new ApiResponse(true, msg);
+    }
 
+    @Override
+    public UserWebWish wishCount(Long id, Long userId) {
+        Merchandise merchandise = merchandiseRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("상품이 없어요"));
+        User user = User.builder().id(userId).build();
+
+        Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
+        return new UserWebWish(id, existingWish.isPresent());
     }
 
 }
