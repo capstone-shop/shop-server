@@ -19,5 +19,6 @@ public interface AdminWebCategoryService {
 
     List<CategoryResponseDto> getAllCategories();
 
-    CategoryTreeResponseDto getCategoriesByParent(String parentTitle);
+    CategoryTreeResponseDto getCategoriesByParent(Long parentId);
+    List<CategoryResponseDto> getAllMainCategories();
 }

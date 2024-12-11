@@ -21,4 +21,6 @@ public interface ChatService {
 
     // 메시지 읽음 상태로 변경
     MessageResponse markMessageAsRead(Long messageId);
+//
+//    List<ChatR>
 }

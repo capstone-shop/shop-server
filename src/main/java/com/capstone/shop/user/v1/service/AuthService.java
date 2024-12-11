@@ -8,13 +8,14 @@ import com.capstone.shop.core.domain.enums.AuthProvider;
 
 import com.capstone.shop.core.domain.enums.Role;
 import com.capstone.shop.user.v1.controller.dto.auth.SignUpRequest;
+import com.capstone.shop.user.v1.controller.dto.auth.UpdateUserRequest;
 
 import java.util.Map;
 
 public interface AuthService {
     Map<String, String> signIn(String email, String password);
     ApiResponse signUpUser(SignUpRequest signUpRequest);
-    ApiResponse updateMyInfo(SignUpRequest signUpRequest, Long id);
+    ApiResponse updateMyInfo(UpdateUserRequest updateUserRequest, Long id);
 
     UserMeResponse getMyInfo(Long id);
     void saveAdditionalInfo(Long userId, OAuth2AdditionalInfoRequest oAuth2AdditionalInfoRequest);

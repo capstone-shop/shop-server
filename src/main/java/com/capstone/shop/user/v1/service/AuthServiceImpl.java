@@ -14,6 +14,7 @@ import com.capstone.shop.core.exception.BadRequestException;
 import com.capstone.shop.core.security.TokenProvider;
 import com.capstone.shop.core.domain.repository.UserRepository;
 import com.capstone.shop.user.v1.controller.dto.auth.SignUpRequest;
+import com.capstone.shop.user.v1.controller.dto.auth.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -79,14 +80,14 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public ApiResponse updateMyInfo(SignUpRequest signUpRequest,Long id) {
+    public ApiResponse updateMyInfo(UpdateUserRequest updateUserRequest, Long id) {
         User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("내정보 찾기 불가"));
 
-        user.setName(signUpRequest.getName());
-        user.setEmail(signUpRequest.getEmail());
-        user.setAddress(signUpRequest.getAddress());
-        user.setPhoneNumber(signUpRequest.getPhone_number()); // JSON 필드명 통일
-        user.setProfileImages(signUpRequest.getProfileImages());
+        user.setName(updateUserRequest.getName());
+        user.setEmail(updateUserRequest.getEmail());
+        user.setAddress(updateUserRequest.getAddress());
+        user.setPhoneNumber(updateUserRequest.getPhone_number()); // JSON 필드명 통일
+        user.setProfileImages(updateUserRequest.getProfileImages());
 
         userRepository.save(user);
 
