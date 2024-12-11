@@ -8,7 +8,6 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDe
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandise;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
-import com.capstone.shop.core.domain.dto.ApiResponse;
 import com.capstone.shop.core.domain.repository.CategoryRepository;
 import com.capstone.shop.core.domain.repository.WishRepository;
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseQueryRepository;
@@ -35,7 +34,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
     private final MerchandiseRepository merchandiseRepository;
     private final CategoryRepository categoryRepository;
-    private final MerchandiseQueryRepository userWebMerchandiseQueryRepository;
+    private final MerchandiseQueryRepository merchandiseQueryRepository;
     private final WishRepository wishRepository;
 
     @Override
@@ -57,7 +56,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     public UserWebMerchandiseDetail getMerchandise(Long merchandiseId) {
 
         Merchandise merchandise = merchandiseRepository.findById(merchandiseId).orElseThrow();
-        List<UserWebMerchandise> list = userWebMerchandiseQueryRepository.findRelatedMerchandises(merchandise)
+        List<UserWebMerchandise> list = merchandiseQueryRepository.findRelatedMerchandises(merchandise)
                 .stream()
                 .map(UserWebMerchandise::new)
                 .toList();
@@ -104,19 +103,16 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     }
 
     @Override
-    public ApiResponse toggleWish(Long id, Long userId){
+    public UserWebWish toggleWish(Long id, Long userId){
         Merchandise merchandise = merchandiseRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("상품이 없어요"));
         User user = User.builder().id(userId).build();
 
         Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
 
-        String msg;
-
         if (existingWish.isPresent()) {//이미 찜을 했다면?
             merchandise.subWishCount();    //찜 목록이랑 횟수 감소
             wishRepository.delete(existingWish.get()); //찜 테이블에서 삭제
-            msg = "찜 횟수 감소 및 위시리스트에서 삭제 성공";
         } else {
             merchandise.addWishCount(); //아니라면 상품 찜 갯수에 1 추가하고
             Wish newWish = Wish.builder()
@@ -125,11 +121,10 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
                     .wishDate(LocalDateTime.now())
                     .build();
             wishRepository.save(newWish); //찜 테이블에 추가
-            msg = "찜 횟수 증가 및 위시리스트에 추가 성공";
         }
         merchandiseRepository.save(merchandise);
 
-        return new ApiResponse(true, msg);
+        return new UserWebWish(id, existingWish.isPresent());
     }
 
     @Override
@@ -141,5 +136,4 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
         Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
         return new UserWebWish(id, existingWish.isPresent());
     }
-
 }
