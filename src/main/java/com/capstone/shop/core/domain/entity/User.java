@@ -71,6 +71,9 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Wish> wishes;
 
+    @OneToMany(mappedBy = "register", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Merchandise> merchandises;
+
     public User(
             @NotNull @Size(max = 12) String name,
             @NotNull @Size(max = 100) String email,
