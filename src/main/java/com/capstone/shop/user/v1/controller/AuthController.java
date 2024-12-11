@@ -41,7 +41,7 @@ public class AuthController {
         return ResponseEntity.ok(new AccessTokenResponse(accessToken, refreshToken));
     }
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         authService.signUpUser(
                 signUpRequest
         );
