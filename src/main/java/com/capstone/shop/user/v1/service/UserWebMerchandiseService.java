@@ -7,6 +7,7 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDe
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
 import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
 import com.capstone.shop.user.v1.search.Filter;
 import org.springframework.data.domain.Pageable;
 
@@ -20,6 +21,7 @@ public interface UserWebMerchandiseService {
 
     HomeMerchandiseList getHomeMerchandiseList();
 
-    ApiResponse WishCount(Long id, @CurrentUser User user);
+    ApiResponse toggleWish(Long id, Long userId);
 
+    UserWebWish wishCount(Long id, Long userId);
 }

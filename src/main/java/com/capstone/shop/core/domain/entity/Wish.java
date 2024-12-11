@@ -18,12 +18,8 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "wish_merchandise",
-            joinColumns = @JoinColumn(name = "wish_id"),
-            inverseJoinColumns = @JoinColumn(name = "merchandise_id")
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "merchandise_id")
     private Merchandise merchandise;
 
     private LocalDateTime wishDate;
