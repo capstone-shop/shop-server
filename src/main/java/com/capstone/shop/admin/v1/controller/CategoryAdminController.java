@@ -62,10 +62,17 @@ public class CategoryAdminController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/parent/{parentTitle}")
+    @GetMapping("/parent/{parentId}")
     @Operation(summary = "하위 카테고리 조회", description = "부모 카테고리의 하위 카테고리를 조회합니다.")
-    public ResponseEntity<CategoryTreeResponseDto> getCategoriesByParent(@PathVariable String parentTitle) {
-        CategoryTreeResponseDto response = categoryService.getCategoriesByParent(parentTitle);
+    public ResponseEntity<CategoryTreeResponseDto> getCategoriesByParent(@PathVariable Long parentId) {
+        CategoryTreeResponseDto response = categoryService.getCategoriesByParent(parentId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/main_category")
+    @Operation(summary = "대 카테고리 조회", description = "하위카테고리가 없는 카테고리 모두 조회합니다")
+    public ResponseEntity<List<CategoryResponseDto>> getAllMainCategories(){
+        List<CategoryResponseDto> response = categoryService.getAllMainCategories();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

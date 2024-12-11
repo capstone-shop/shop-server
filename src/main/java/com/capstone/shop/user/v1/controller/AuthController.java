@@ -4,14 +4,11 @@ import com.capstone.shop.admin.v1.controller.dto.UserResponseDto;
 import com.capstone.shop.core.domain.dto.AdminSignUpRequest;
 import com.capstone.shop.core.domain.dto.UserMeResponse;
 import com.capstone.shop.core.domain.dto.ApiResponse;
-import com.capstone.shop.user.v1.controller.dto.auth.AccessTokenResponse;
-import com.capstone.shop.user.v1.controller.dto.auth.OAuth2AdditionalInfoRequest;
-import com.capstone.shop.user.v1.controller.dto.auth.SignInRequest;
+import com.capstone.shop.user.v1.controller.dto.auth.*;
 import com.capstone.shop.core.exception.ResourceNotFoundException;
 import com.capstone.shop.core.security.CurrentUser;
 import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.core.domain.repository.UserRepository;
-import com.capstone.shop.user.v1.controller.dto.auth.SignUpRequest;
 import com.capstone.shop.user.v1.service.AuthServiceImpl;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,14 +46,14 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<ApiResponse> updateUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "사용자 수정 요청 데이터",
                     required = true,
                     content = @Content(schema = @Schema(implementation = AdminSignUpRequest.class))
             )
-            @RequestBody SignUpRequest signUpRequest, @CurrentUser UserPrincipal userPrincipal
+            @RequestBody UpdateUserRequest updateUserRequest, @CurrentUser UserPrincipal userPrincipal
     ) {
         // id로 사용자 존재 여부 확인
         UserMeResponse existingUser = authService.getMyInfo(userPrincipal.getId());
@@ -65,11 +62,12 @@ public class AuthController {
                     .body(new ApiResponse(false, "사용자를 찾을 수 없습니다."));
         }
 
-        // 사용자 업데이트 로직 실행
-        ApiResponse response = authService.updateMyInfo(signUpRequest, userPrincipal.getId());
+        // 특정 필드만 업데이트하는 로직 실행
+        ApiResponse response = authService.updateMyInfo(updateUserRequest, userPrincipal.getId());
 
         return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/additional-info")
     @PreAuthorize("hasRole('PREUSER')") // 추가정보 입력받는 API

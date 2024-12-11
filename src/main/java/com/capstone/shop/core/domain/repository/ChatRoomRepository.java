@@ -3,8 +3,15 @@ package com.capstone.shop.core.domain.repository;
 import com.capstone.shop.core.domain.entity.ChatRoom;
 import com.capstone.shop.core.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     ChatRoom findBySellerAndBuyer(User seller, User buyer);
+
+    @Query("SELECT c FROM ChatRoom c WHERE c.seller = :user OR c.buyer = :user")
+    List<ChatRoom> findChatRoomsByUser(@Param("user") User user);
 
 }

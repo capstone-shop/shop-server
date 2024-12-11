@@ -119,14 +119,22 @@ public class AdminWebCategoryServiceImpl implements AdminWebCategoryService {
     }
 
     @Transactional(readOnly = true)
-    public CategoryTreeResponseDto getCategoriesByParent(String parentTitle) {
+    public CategoryTreeResponseDto getCategoriesByParent(Long parentId) {
         // 부모 카테고리 찾기
-        Category parentCategory = categoryRepository.findByTitle(parentTitle)
-                .orElseThrow(() -> new IllegalArgumentException("부모 카테고리를 찾을 수 없습니다: " + parentTitle));
+        Category parentCategory = categoryRepository.findById(parentId)
+                .orElseThrow(() -> new IllegalArgumentException("부모 카테고리를 찾을 수 없습니다: " + parentId));
 
         // 해당 부모의 자식 카테고리 조회
         List<Category> childCategories = categoryRepository.findByParent(parentCategory);
 
         return new CategoryTreeResponseDto(parentCategory, childCategories);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryResponseDto> getAllMainCategories() {
+        List<Category> categories = categoryRepository.findByParentIsNull();
+        return categories.stream()
+                .map(CategoryResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
