@@ -27,6 +27,7 @@ public class AdminWebUserServiceImpl implements AdminWebUserService{
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
 
         User user = User.builder()
+                .id(signUpRequest.getId())
                 .name(signUpRequest.getName())
                 .email(signUpRequest.getEmail())
                 .password(encodedPassword)

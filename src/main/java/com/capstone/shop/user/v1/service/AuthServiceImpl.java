@@ -1,5 +1,7 @@
 package com.capstone.shop.user.v1.service;
 
+import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.domain.dto.UserMeResponse;
 import com.capstone.shop.core.exception.ResourceNotFoundException;
 
 import com.capstone.shop.core.security.UserPrincipal;
@@ -55,7 +57,7 @@ public class AuthServiceImpl implements AuthService{
         return tokens;
     }
     @Override
-    public SignUpRequest signUpUser(SignUpRequest signUpRequest) {
+    public ApiResponse signUpUser(SignUpRequest signUpRequest) {
         if(userRepository.existsByEmail(signUpRequest.getEmail())){
             throw new BadRequestException("Email address already Exist.");
         }
@@ -72,8 +74,29 @@ public class AuthServiceImpl implements AuthService{
                 .build();
         User savedUser = userRepository.save(user);
 
-        return SignUpRequest.fromEntity(savedUser);
+        return new ApiResponse(true, "유저 생성 성공");
 
+    }
+
+    @Override
+    public ApiResponse updateMyInfo(SignUpRequest signUpRequest,Long id) {
+        User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("내정보 찾기 불가"));
+
+        user.setName(signUpRequest.getName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setAddress(signUpRequest.getAddress());
+        user.setPhoneNumber(signUpRequest.getPhone_number()); // JSON 필드명 통일
+        user.setProfileImages(signUpRequest.getProfileImages());
+
+        userRepository.save(user);
+
+        return new ApiResponse(true, "유저 업데이트 성공");
+    }
+
+    @Override
+    public UserMeResponse getMyInfo(Long id) {
+        User myInfo = userRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("내 정보를 찾을 수 없음"));
+        return new UserMeResponse(myInfo);
     }
 
 
