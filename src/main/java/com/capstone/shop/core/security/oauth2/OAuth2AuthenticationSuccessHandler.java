@@ -58,10 +58,20 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
             // ROLE_PREUSER라면 추가 정보 입력 페이지로 리다이렉트
             if (user.getRole() == Role.ROLE_PREUSER) {
                 logger.info("ROLE_PREUSER detected, redirecting to additional info page.");
+
+                // 토큰 먼저 생성
+                String accessToken = tokenProvider.createToken(authentication);
+                String refreshToken = tokenProvider.createRefreshToken(authentication);
+                refreshTokenService.saveRefreshToken(user, refreshToken);
+
+                // 추가 정보 URL에 토큰을 쿼리 파라미터로 추가
+                UriComponentsBuilder builder2 = UriComponentsBuilder.fromUriString(additionalInfoUrl)
+                        .queryParam("token", accessToken);
+
                 if (!response.isCommitted()) {
-                    getRedirectStrategy().sendRedirect(request, response, additionalInfoUrl);
+                    getRedirectStrategy().sendRedirect(request, response, builder2.build().toUriString());
                 }
-                return; // 이후 로직 실행 못하게함
+                return;
             }
         }
         // 기존 targetUrl에서 쿼리 파라미터로 토큰 추가
