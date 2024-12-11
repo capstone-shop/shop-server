@@ -47,9 +47,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
         Page<Merchandise> result = merchandiseRepository.findAll(spec, pageable);
 
-        List<UserWebMerchandise> merchandiseList = UserWebMerchandise.entityPageToDtoList(result);
-
-        return new UserWebMerchandisePagination(merchandiseList, result.getTotalPages());
+        return new UserWebMerchandisePagination(result);
     }
 
     @Override

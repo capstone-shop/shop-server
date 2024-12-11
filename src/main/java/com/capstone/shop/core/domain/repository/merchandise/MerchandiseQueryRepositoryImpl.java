@@ -5,20 +5,20 @@ import com.capstone.shop.core.domain.entity.Category;
 import com.capstone.shop.core.domain.entity.Merchandise;
 
 import com.capstone.shop.core.domain.entity.QCategory;
-import com.querydsl.core.Tuple;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import static com.capstone.shop.core.domain.entity.QCategory.category;
 import static com.capstone.shop.core.domain.entity.QMerchandise.merchandise;
+import static com.capstone.shop.core.domain.entity.QUser.user;
+import static com.capstone.shop.core.domain.entity.QWish.wish;
 
 @RequiredArgsConstructor
 @Repository
@@ -73,5 +73,35 @@ public class MerchandiseQueryRepositoryImpl implements MerchandiseQueryRepositor
                 break;
         }
         return result;
+    }
+
+    @Override
+    public UserWebMerchandisePagination findWishlistOrderByWishDate(Long id, Pageable page) {
+        List<Merchandise> merchandiseList = queryFactory
+                .select(merchandise)
+                .from(wish)
+                .leftJoin(wish.merchandise, merchandise)
+                .where(wish.user.id.eq(id))
+                .orderBy(wish.wishDate.desc())
+                .offset(page.getOffset())
+                .limit(page.getPageSize())
+                .fetch();
+
+        return new UserWebMerchandisePagination(merchandiseList);
+    }
+
+    @Override
+    public UserWebMerchandisePagination findRegisteredMerchandiseOrderByCreatedAt(Long id, Pageable page) {
+        List<Merchandise> merchandiseList = queryFactory
+                .select(merchandise)
+                .from(user)
+                .leftJoin(user.merchandises, merchandise)
+                .where(merchandise.register.id.in(id))
+                .orderBy(merchandise.createdAt.desc())
+                .offset(page.getOffset())
+                .limit(page.getPageSize())
+                .fetch();
+
+        return new UserWebMerchandisePagination(merchandiseList);
     }
 }
