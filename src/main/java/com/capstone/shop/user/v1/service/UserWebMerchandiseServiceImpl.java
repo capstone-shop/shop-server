@@ -14,6 +14,7 @@ import com.capstone.shop.core.domain.repository.merchandise.MerchandiseQueryRepo
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseRepository;
 import com.capstone.shop.core.domain.entity.Merchandise;
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseSpec;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebPostMerchandiseResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
 import com.capstone.shop.user.v1.search.Filter;
 
@@ -66,19 +67,19 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     }
 
     @Override
-    public boolean createMerchandise(UserWebMerchandiseRegister request, Long id) {
+    public UserWebPostMerchandiseResponse createMerchandise(UserWebMerchandiseRegister request, Long id) {
         // 추후 현재 로그인한 유저를 가져와야 함.
         User user = User.builder().id(id).build();
 
         Optional<Category> categoryOp = categoryRepository.findById(Long.valueOf(request.getCategoryId()));
         if (categoryOp.isEmpty())
-            return false;
+            return new UserWebPostMerchandiseResponse(false, 0);
 
         Category category = categoryOp.get();
         Merchandise entity = request.toEntity(category, user);
 
         entity = merchandiseRepository.save(entity);
-        return entity.getId() != null;
+        return new UserWebPostMerchandiseResponse(true, entity.getId());
     }
 
     @Override

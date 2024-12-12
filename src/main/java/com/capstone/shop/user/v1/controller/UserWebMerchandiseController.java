@@ -5,16 +5,20 @@ import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
+import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebPostMerchandiseResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.search.Filter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -52,13 +56,16 @@ public class UserWebMerchandiseController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> createMerchandise(@RequestBody UserWebMerchandiseRegister request,
+    @Operation(summary = "상품 등록 api")
+    @ApiResponses(value = {
+            @ApiResponse(content = @Content(examples = {
+                    @ExampleObject(name = "실패", value = "{\"success\":false,\"id\":0}"),
+                    @ExampleObject(name = "성공", value = "{\"success\":true,\"id\":101}")
+            }))
+    })
+    public UserWebPostMerchandiseResponse createMerchandise(@RequestBody UserWebMerchandiseRegister request,
             @CurrentUser UserPrincipal userPrincipal) {
-        boolean result = userWebMerchandiseService.createMerchandise(request, userPrincipal.getId());
-        if (result) {
-            return ResponseEntity.ok("success to create merchandise");
-        }
-        return ResponseEntity.badRequest().body("merchandise could not be created");
+        return userWebMerchandiseService.createMerchandise(request, userPrincipal.getId());
     }
 
     @PatchMapping("/{id}/wish")   //요청 보내면 위시카운트 + 1 , 위시리스트 등록, 만약 위시리스트에 이미 있는 상품이면 위시카운트 -1
