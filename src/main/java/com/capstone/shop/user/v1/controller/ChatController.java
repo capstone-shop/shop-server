@@ -3,8 +3,11 @@ import com.capstone.shop.core.domain.entity.ChatRoom;
 import com.capstone.shop.core.domain.entity.Message;
 import com.capstone.shop.core.domain.entity.User;
 import com.capstone.shop.core.domain.repository.UserRepository;
+import com.capstone.shop.core.security.CurrentUser;
+import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.user.v1.controller.dto.chat.ChatRoomResponse;
 import com.capstone.shop.user.v1.controller.dto.chat.MessageResponse;
+import com.capstone.shop.user.v1.controller.dto.chat.MyChatRoomResponse;
 import com.capstone.shop.user.v1.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +32,15 @@ public class ChatController {
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new IllegalArgumentException("구매자를 찾을 수 없습니다."));
 
-        ChatRoom chatRoom = chatService.createChatRoom(seller, buyer);
-
-        ChatRoomResponse response = ChatRoomResponse.fromEntity(chatRoom);
+        ChatRoomResponse response = chatService.createChatRoom(seller, buyer);
         return ResponseEntity.ok(response);
     }
 
-    //채팅 히스토리 조회
-    @GetMapping("/{roomId}/messages")
+    @GetMapping("/my-chat-rooms")
+    public ResponseEntity<List<MyChatRoomResponse>> getChatRooms(@CurrentUser UserPrincipal userPrincipal) {
+        List<MyChatRoomResponse> chatRooms = chatService.getChatRooms(userPrincipal.getId());
+        return ResponseEntity.ok(chatRooms);
+    }
     public List<MessageResponse> getChatHistory(@PathVariable Long roomId) {
         return chatService.getChatHistory(roomId);
     }

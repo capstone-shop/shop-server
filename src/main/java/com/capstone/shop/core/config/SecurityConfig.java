@@ -35,7 +35,6 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CustomUserDetailService customUserDetailsService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
