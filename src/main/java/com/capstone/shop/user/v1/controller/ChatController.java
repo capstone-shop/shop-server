@@ -41,6 +41,7 @@ public class ChatController {
         List<MyChatRoomResponse> chatRooms = chatService.getChatRooms(userPrincipal.getId());
         return ResponseEntity.ok(chatRooms);
     }
+    @GetMapping("/{roomId}")
     public List<MessageResponse> getChatHistory(@PathVariable Long roomId) {
         return chatService.getChatHistory(roomId);
     }
