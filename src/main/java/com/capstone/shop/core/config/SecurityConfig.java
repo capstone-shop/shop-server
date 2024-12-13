@@ -81,7 +81,7 @@ public class SecurityConfig {
                                 "/additional-info",
                                 "/additionalInfo",
                                 "/login/oauth2/code/*",
-                                "api/v1/**",
+                                "/api/v1/**",
                                 "static/**",
                                 "assets/**"
                         ).permitAll()
