@@ -23,15 +23,15 @@ public class TemporaryPasswordEmailSendService {
         return String.format("%06d", new Random().nextInt(999999));
     }
 
-    public void sendTemporaryPasswordAndChangePassword(String to) throws MessagingException{
-        User user = userRepository.findByEmail(to)
+    public void sendTemporaryPasswordAndChangePassword(Long id) throws MessagingException{
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         String temporaryPassword = generateTemporaryPassword();
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setTo(to);
+        helper.setTo(user.getEmail());
         helper.setSubject("임시 비밀번호가 발급되었습니다.");
         helper.setText("임시 비밀번호: " + temporaryPassword + "\n\n추후 비밀번호를 변경해 주세요.");
 

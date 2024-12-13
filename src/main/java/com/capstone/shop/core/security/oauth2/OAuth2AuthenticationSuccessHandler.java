@@ -44,8 +44,10 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         // 리다이렉트할 URI 구성 (프론트엔드 uri)
-        String additionalInfoUrl = "https://induk.shop//additionalInfo";
-        String frontEndUri = "https://induk.shop//oauth2/redirect";
+        String additionalInfoUrl = "https://induk.shop/additionalInfo";
+        String frontEndUri = "https://induk.shop/oauth2/redirect";
+//        String additionalInfoUrl = "https://localhost:3000/additionalInfo";
+//        String frontEndUri = "http://localhost:3000/oauth2/redirect";
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(frontEndUri);
 
         if (authentication.getPrincipal() instanceof UserPrincipal) {
@@ -56,23 +58,23 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
                     .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없음"));
 
             // ROLE_PREUSER라면 추가 정보 입력 페이지로 리다이렉트
-            if (user.getRole() == Role.ROLE_PREUSER) {
-                logger.info("ROLE_PREUSER detected, redirecting to additional info page.");
-
-                // 토큰 먼저 생성
-                String accessToken = tokenProvider.createToken(authentication);
-                String refreshToken = tokenProvider.createRefreshToken(authentication);
-                refreshTokenService.saveRefreshToken(user, refreshToken);
-
-                // 추가 정보 URL에 토큰을 쿼리 파라미터로 추가
-                UriComponentsBuilder builder2 = UriComponentsBuilder.fromUriString(additionalInfoUrl)
-                        .queryParam("token", accessToken);
-
-                if (!response.isCommitted()) {
-                    getRedirectStrategy().sendRedirect(request, response, builder2.build().toUriString());
-                }
-                return;
-            }
+//            if (user.getRole() == Role.ROLE_PREUSER) {
+//                logger.info("ROLE_PREUSER detected, redirecting to additional info page.");
+//
+//                // 토큰 먼저 생성
+//                String accessToken = tokenProvider.createToken(authentication);
+//                String refreshToken = tokenProvider.createRefreshToken(authentication);
+//                refreshTokenService.saveRefreshToken(user, refreshToken);
+//
+//                // 추가 정보 URL에 토큰을 쿼리 파라미터로 추가
+//                UriComponentsBuilder builder2 = UriComponentsBuilder.fromUriString(additionalInfoUrl)
+//                        .queryParam("token", accessToken);
+//
+//                if (!response.isCommitted()) {
+//                    getRedirectStrategy().sendRedirect(request, response, builder2.build().toUriString());
+//                }
+//                return;
+//            }
         }
         // 기존 targetUrl에서 쿼리 파라미터로 토큰 추가
         String token = extractTokenFromTargetUrl(targetUrl); // targetUrl에서 토큰을 추출하는 메서드 필요

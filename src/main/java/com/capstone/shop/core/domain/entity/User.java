@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -73,6 +74,12 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "register", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Merchandise> merchandises;
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatRoom> sellerChatRooms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatRoom> buyerChatRooms = new ArrayList<>();
 
     public User(
             @NotNull @Size(max = 12) String name,

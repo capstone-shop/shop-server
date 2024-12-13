@@ -1,6 +1,8 @@
 package com.capstone.shop.user.v1.controller;
 
 import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.security.CurrentUser;
+import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.user.v1.service.TemporaryPasswordEmailSendService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Email;
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthFindPasswordController {
     private final TemporaryPasswordEmailSendService temporaryPasswordEmailSendService;
     @PostMapping("/lostmyPassword")
-    public ResponseEntity<ApiResponse> sendTemporaryPasswordAndChangePassword(@RequestParam @Email String email){
+    public ResponseEntity<ApiResponse> sendTemporaryPasswordAndChangePassword(@CurrentUser UserPrincipal userPrincipal){
         try{
-            temporaryPasswordEmailSendService.sendTemporaryPasswordAndChangePassword(email);
+            temporaryPasswordEmailSendService.sendTemporaryPasswordAndChangePassword(userPrincipal.getId());
             return ResponseEntity.ok(new ApiResponse(true, "임시비번 전송 성공."));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
