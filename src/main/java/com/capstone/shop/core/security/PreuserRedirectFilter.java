@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 @RequiredArgsConstructor
 public class PreuserRedirectFilter extends OncePerRequestFilter {
-    private static final String ADDITIONAL_INFO_URL = "https://induk.shop/additional-info";
+    private static final String ADDITIONAL_INFO_URL = "https://induk.shop/additionalInfo";
     private final UserRepository userRepository;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
