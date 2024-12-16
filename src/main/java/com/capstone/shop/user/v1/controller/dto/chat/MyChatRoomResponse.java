@@ -12,4 +12,5 @@ public class MyChatRoomResponse {
     private String otherUserName;
     private String otherUserProfileImage;
     private String lastMessage;
+    private LocalDateTime lastMessageSendTime;
 }
