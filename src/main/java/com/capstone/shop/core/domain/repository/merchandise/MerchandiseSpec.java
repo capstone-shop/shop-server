@@ -52,6 +52,20 @@ public class MerchandiseSpec {
             String column = filterType.getColumnName();
             QueryType queryType = filterType.getQuery();
 
+            if (filterType == FilterType.CATE) {
+                Join<?,?> cate = root.join("category", JoinType.LEFT);
+                Join<?,?> catePa = cate.join("parent", JoinType.LEFT);
+                Join<?,?> catePaPa = catePa.join("parent", JoinType.LEFT);
+
+                List<Path<Long>> paths = new ArrayList<>();
+                paths.add(cate.get("id"));
+                paths.add(catePa.get("id"));
+                paths.add(catePaPa.get("id"));
+
+                List<Integer> categories = options.get(0).getIntList();
+                return paths.stream().map(p -> p.in(categories)).reduce(builder::or).orElse(null);
+            }
+
             if (queryType == QueryType.EQUAL){
                 Path<Object> path = getPathFromColumnName(root, column);
                 return options.stream()
@@ -60,7 +74,7 @@ public class MerchandiseSpec {
                         .orElse(null);
             }
 
-            if (queryType == QueryType.IN){
+            if (queryType == QueryType.IN) {
                 Path<Object> path = getPathFromColumnName(root, column);
                 return options.stream()
                         .map(option -> path.in(option.getIntList()))
