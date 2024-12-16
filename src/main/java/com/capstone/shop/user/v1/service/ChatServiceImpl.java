@@ -11,6 +11,7 @@ import com.capstone.shop.user.v1.controller.dto.chat.MessageResponse;
 import com.capstone.shop.user.v1.controller.dto.chat.MyChatRoomResponse;
 import com.capstone.shop.user.v1.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -75,13 +76,16 @@ public class ChatServiceImpl implements ChatService {
 
             // 마지막 메시지 조회
             Message lastMessage = messageRepository.findTopByChatRoomOrderByCreatedAtDesc(chatRoom);
+            String lastMessageContent = lastMessage != null ? lastMessage.getContent() : "";
+            LocalDateTime lastMessageSendTime = lastMessage != null ? lastMessage.getCreatedAt() : null;
 
             // DTO 생성
             return MyChatRoomResponse.builder()
                     .chatRoomId(chatRoom.getId())
                     .otherUserName(otherUser.getName())
                     .otherUserProfileImage(otherUser.getProfileImages())
-                    .lastMessage(lastMessage != null ? lastMessage.getContent() : "")
+                    .lastMessage(lastMessageContent)
+                    .lastMessageSendTime(lastMessageSendTime)
                     .build();
         }).collect(Collectors.toList());
     }
