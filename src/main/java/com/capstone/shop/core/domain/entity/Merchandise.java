@@ -56,7 +56,7 @@ public class Merchandise extends BaseTimeEntity {
     @Column(nullable = false)
     private MerchandiseQualityState merchandiseState; // 상품 상태 (NEW, GOOD, AVERAGE, BAD, BROKEN)
 
-    @Column(name = "image_urls")
+    @Column(name = "image_urls", columnDefinition = "varchar(800)")
     @Pattern(message = "imageUrls 유효성 검사 실패", regexp = "^(https?://[^<>`₩^;]+(;https?://[^<>`₩^;]+)*)?$")
     private String imageUrls; // 이미지 URL (;로 구분)
 
