@@ -1,8 +1,10 @@
 package com.capstone.shop.user.v1.service;
 
+import com.capstone.shop.core.domain.dto.ApiResponse;
 import com.capstone.shop.core.domain.entity.Category;
 import com.capstone.shop.core.domain.entity.User;
 import com.capstone.shop.core.domain.entity.Wish;
+import com.capstone.shop.core.domain.repository.UserRepository;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
@@ -20,6 +22,7 @@ import com.capstone.shop.user.v1.search.Filter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +40,7 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     private final CategoryRepository categoryRepository;
     private final MerchandiseQueryRepository merchandiseQueryRepository;
     private final WishRepository wishRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserWebMerchandisePagination getMerchandise(String search, Pageable pageable, Filter filter) {
@@ -134,5 +138,42 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
 
         Optional<Wish> existingWish = wishRepository.findByUserAndMerchandise(user, merchandise);
         return new UserWebWish(id, existingWish.isPresent());
+    }
+
+    @Override
+    public ApiResponse deleteMerchandise(Long id, Long merchandiseId) {
+        Optional<Merchandise> merchandise = merchandiseRepository.findById(merchandiseId);
+        if (merchandise.isEmpty()) {
+            return new ApiResponse(false, "해당하는 id의 상품이 없습니다.");
+        }
+        if (!Objects.equals(merchandise.get().getRegister().getId(), id)) {
+            return new ApiResponse(false, "현재 사용자 계정에서 등록된 상품이 아닙니다.");
+        }
+        merchandiseRepository.delete(merchandise.get());
+        return new ApiResponse(true, "삭제 완료");
+    }
+
+    @Override
+    public ApiResponse putMerchandise(Long id, Long merchandiseId, UserWebMerchandiseRegister request) {
+        Optional<Merchandise> merchandise = merchandiseRepository.findById(merchandiseId);
+        if (merchandise.isEmpty()) {
+            return new ApiResponse(false, "해당하는 id의 상품이 없습니다.");
+        }
+        if (!Objects.equals(merchandise.get().getRegister().getId(), id)) {
+            return new ApiResponse(false, "현재 사용자 계정에서 등록된 상품이 아닙니다.");
+        }
+
+        Optional<Category> categoryOp = categoryRepository.findById(Long.valueOf(request.getCategoryId()));
+        if (categoryOp.isEmpty()) {
+            return new ApiResponse(false, "해당하는 id의 카테고리가 없습니다.");
+        }
+
+        Optional<User> userOp = userRepository.findById(id);
+        if (userOp.isEmpty()) {
+            return new ApiResponse(false, "사용자 계정이 조회되지 않습니다.");
+        }
+
+        merchandiseRepository.save(request.toEntity(categoryOp.get(), userOp.get(), merchandiseId));
+        return new ApiResponse(true, "수정 완료");
     }
 }

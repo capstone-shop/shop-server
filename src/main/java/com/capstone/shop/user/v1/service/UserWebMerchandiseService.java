@@ -1,5 +1,6 @@
 package com.capstone.shop.user.v1.service;
 
+import com.capstone.shop.core.domain.dto.ApiResponse;
 import com.capstone.shop.user.v1.controller.dto.home.HomeMerchandiseList;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
@@ -22,4 +23,8 @@ public interface UserWebMerchandiseService {
     UserWebWish toggleWish(Long id, Long userId);
 
     UserWebWish wishCount(Long id, Long userId);
+
+    ApiResponse deleteMerchandise(Long id, Long merchandiseId);
+
+    ApiResponse putMerchandise(Long id, Long merchandiseId, UserWebMerchandiseRegister request);
 }
