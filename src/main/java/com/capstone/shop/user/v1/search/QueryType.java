@@ -7,5 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum QueryType {
     EQUAL,
-    GREATER_OR_EQUAL
+    GREATER_OR_EQUAL,
+    IN
 }

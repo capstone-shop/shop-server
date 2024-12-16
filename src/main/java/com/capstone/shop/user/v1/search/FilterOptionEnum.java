@@ -46,4 +46,9 @@ public enum FilterOptionEnum implements FilterOption {
     public int getIntValue() {
         return (int) value;
     }
+
+    @Override
+    public List<Integer> getIntList() {
+        return (List<Integer>) value;
+    }
 }

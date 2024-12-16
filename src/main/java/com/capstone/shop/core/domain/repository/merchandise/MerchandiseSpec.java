@@ -60,6 +60,14 @@ public class MerchandiseSpec {
                         .orElse(null);
             }
 
+            if (queryType == QueryType.IN){
+                Path<Object> path = getPathFromColumnName(root, column);
+                return options.stream()
+                        .map(option -> path.in(option.getIntList()))
+                        .reduce(builder::or)
+                        .orElse(null);
+            }
+
             Path<Integer> path = getPathFromColumnName(root, column);
             return options.stream()
                     .map(option -> builder.greaterThanOrEqualTo(path, option.getIntValue()))

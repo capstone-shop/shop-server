@@ -10,7 +10,8 @@ public enum FilterType {
     WISH("wish", "wish", QueryType.GREATER_OR_EQUAL),
     REPU("repu", "register.reputation", QueryType.GREATER_OR_EQUAL),
     TRAN("tran", "transactionMethod", QueryType.EQUAL),
-    STAT("stat", "merchandiseState", QueryType.EQUAL);
+    STAT("stat", "merchandiseState", QueryType.EQUAL),
+    CATE("cate", "category.id", QueryType.IN);
     private final String filterName, columnName;
     private final QueryType query;
     public static FilterType findByFilterName(String filterName) {
