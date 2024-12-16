@@ -42,7 +42,7 @@ public class ChatServiceImpl implements ChatService {
     // 채팅 히스토리 조회
     @Override
     public List<MessageResponse> getChatHistory(Long roomId) {
-        List<Message> messages= messageRepository.findByIdOrderByCreatedAtAsc(roomId);
+        List<Message> messages= messageRepository.findByChatRoomIdOrderByCreatedAtAsc(roomId);
         return messages.stream()
                 .map(MessageResponse::fromEntity).collect(Collectors.toList());
     }
