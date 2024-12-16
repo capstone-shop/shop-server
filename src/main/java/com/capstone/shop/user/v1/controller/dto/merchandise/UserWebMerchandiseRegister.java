@@ -48,4 +48,27 @@ public class UserWebMerchandiseRegister {
                 .transactionMethod(transactionMethod)
                 .build();
     }
+
+    public Merchandise toEntity(Category cate, User user, Long merchandiseId) {
+        TransactionMethod transactionMethod = TransactionMethod.DELIVERY;
+        if (direct && delivery)
+            transactionMethod = TransactionMethod.BOTH;
+        else if (direct)
+            transactionMethod = TransactionMethod.DIRECT;
+
+        return Merchandise.builder()
+                .id(merchandiseId)
+                .name(name)
+                .register(user)
+                .description(description)
+                .price(price)
+                .category(cate)
+                .saleState(MerchandiseSaleState.SALE)
+                .merchandiseState(state)
+                .imageUrls(images.stream().reduce(String::concat).orElse(""))
+                .location(location)
+                .negotiationAvailable(nego)
+                .transactionMethod(transactionMethod)
+                .build();
+    }
 }
