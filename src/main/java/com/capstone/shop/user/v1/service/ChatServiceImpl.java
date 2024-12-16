@@ -49,9 +49,9 @@ public class ChatServiceImpl implements ChatService {
 
     // 메시지 저장
     @Override
-    public MessageResponse saveMessage(Message message, Long roomId) {
+    public MessageResponse saveMessage(Message message, Long roomId, Long senderId) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()->new IllegalArgumentException("채팅방이 없음"));
-
+        User user = userRepository.findById(senderId).orElseThrow(()->new IllegalArgumentException("로그인하지 않은 사용자"));
         Message savedMessage = messageRepository.save(
                 Message.builder()
                         .chatRoom(chatRoom)

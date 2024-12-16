@@ -49,8 +49,8 @@ public class ChatController {
     // 채팅방 입장 후 메시지 보내기
     @MessageMapping("/sendMessage/{roomId}")
     @SendTo("/topic/messages/{roomId}")
-    public MessageResponse sendMessage(@DestinationVariable Long roomId, Message message) {
-        return chatService.saveMessage(message, roomId);
+    public MessageResponse sendMessage(@DestinationVariable Long roomId, Message message, @CurrentUser UserPrincipal userPrincipa) {
+        return chatService.saveMessage(message, roomId, userPrincipa.getId());
     }
     @MessageMapping("/markAsRead")
     @SendTo("/topic/messages/{roomId}")
