@@ -19,7 +19,7 @@ public class CategoryRequestDto {
 
     private Long sequence;
 
-    private String register;
+    //private String register;
 
     public Category toEntity(Category parentCategory) {
         return Category.builder()
@@ -36,8 +36,7 @@ public class CategoryRequestDto {
                 category.getTitle(),
                 category.isLeaf(),  //이거 getIsLeaf()랑 같음
                 category.getParent().getId() != null ? category.getParent().getId() : null,
-                category.getSequence(),
-                category.getRegister().toString()
+                category.getSequence()
         );
     }
 
