@@ -19,7 +19,7 @@ public interface ChatService {
     List<MessageResponse> getChatHistory(Long roomId);
     List<MyChatRoomResponse> getChatRooms(Long currentUserId);
     // 메시지 저장
-    MessageResponse saveMessage(Message message, Long roomId, Long senderId);
+    MessageResponse saveMessage(Message message, Long roomId);
 
     // 메시지 읽음 상태로 변경
     MessageResponse markMessageAsRead(Long messageId);
