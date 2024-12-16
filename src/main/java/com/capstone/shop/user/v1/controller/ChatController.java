@@ -26,10 +26,10 @@ public class ChatController {
     private final UserRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestParam Long sellerId, @RequestParam Long buyerId) {
+    public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestParam Long sellerId, @CurrentUser UserPrincipal userPrincipal) {
         User seller = userRepository.findById(sellerId)
                 .orElseThrow(() -> new IllegalArgumentException("판매자를 찾을 수 없습니다."));
-        User buyer = userRepository.findById(buyerId)
+        User buyer = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new IllegalArgumentException("구매자를 찾을 수 없습니다."));
 
         ChatRoomResponse response = chatService.createChatRoom(seller, buyer);
