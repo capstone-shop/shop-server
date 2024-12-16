@@ -55,7 +55,7 @@ public class ChatServiceImpl implements ChatService {
         Message savedMessage = messageRepository.save(
                 Message.builder()
                         .chatRoom(chatRoom)
-                        .sender(message.getSender())
+                        .sender(user)
                         .content(message.getContent())
                         .isRead(false)
                         .createdAt(LocalDateTime.now())
