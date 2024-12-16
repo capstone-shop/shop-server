@@ -1,5 +1,6 @@
 package com.capstone.shop.user.v1.search;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -15,5 +16,10 @@ public class FilterOptionClass implements FilterOption {
     @Override
     public int getIntValue() {
         return (int) value;
+    }
+
+    @Override
+    public List<Integer> getIntList() {
+        return (List<Integer>) value;
     }
 }
