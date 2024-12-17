@@ -1,6 +1,8 @@
 package com.capstone.shop.admin.v1.controller.dto;
 
 import com.capstone.shop.core.domain.entity.Category;
+import com.capstone.shop.core.domain.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryRequestDto {
-    private Long id;
-
     private String title;
 
     private boolean isLeaf;
@@ -19,25 +19,29 @@ public class CategoryRequestDto {
 
     private Long sequence;
 
-    //private String register;
+    @JsonProperty("isLeaf")
+    public boolean getIsLeaf() {
+        return isLeaf;
+    }
 
-    public Category toEntity(Category parentCategory) {
+    public Category toEntity(Category parentCategory, User user) {
         return Category.builder()
-                .id(this.id)
                 .title(this.title)
                 .isLeaf(this.isLeaf)
-                .parent(parentCategory)  // 부모 카테고리를 설정
+                .parent(parentCategory)
+                .sequence(this.sequence)
+                .register(user)
                 .build();
     }
 
-    public static CategoryRequestDto fromEntity(Category category) {
-        return new CategoryRequestDto(
-                category.getId(),
-                category.getTitle(),
-                category.isLeaf(),  //이거 getIsLeaf()랑 같음
-                category.getParent().getId() != null ? category.getParent().getId() : null,
-                category.getSequence()
-        );
+    public Category toEntity(Category parentCategory, User user, Long id) {
+        return Category.builder()
+                .id(id)
+                .title(this.title)
+                .isLeaf(this.isLeaf)
+                .parent(parentCategory)
+                .sequence(this.sequence)
+                .register(user)
+                .build();
     }
-
 }

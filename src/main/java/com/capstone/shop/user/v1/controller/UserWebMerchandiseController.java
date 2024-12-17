@@ -5,7 +5,7 @@ import com.capstone.shop.core.security.UserPrincipal;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebPostMerchandiseResponse;
+import com.capstone.shop.core.domain.dto.CreateApiResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.search.Filter;
@@ -60,7 +60,7 @@ public class UserWebMerchandiseController {
             @ExampleObject(name = "실패", value = "{\"success\":false,\"id\":0}"),
             @ExampleObject(name = "성공", value = "{\"success\":true,\"id\":101}")
     }))
-    public UserWebPostMerchandiseResponse createMerchandise(@RequestBody UserWebMerchandiseRegister request,
+    public CreateApiResponse createMerchandise(@RequestBody UserWebMerchandiseRegister request,
             @CurrentUser UserPrincipal userPrincipal) {
         return userWebMerchandiseService.createMerchandise(request, userPrincipal.getId());
     }

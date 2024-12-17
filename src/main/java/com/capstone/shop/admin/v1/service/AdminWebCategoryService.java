@@ -3,13 +3,14 @@ package com.capstone.shop.admin.v1.service;
 import com.capstone.shop.admin.v1.controller.dto.CategoryRequestDto;
 import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.*;
 import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.domain.dto.CreateApiResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface AdminWebCategoryService {
-    ApiResponse createCategory(Long userId, CategoryRequestDto categoryRequestDto);
+    CreateApiResponse createCategory(Long userId, CategoryRequestDto categoryRequestDto);
 
     ApiResponse updateCategory(Long userId, CategoryRequestDto categoryRequestDto,Long id);
 

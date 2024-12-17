@@ -16,7 +16,7 @@ import com.capstone.shop.core.domain.repository.merchandise.MerchandiseQueryRepo
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseRepository;
 import com.capstone.shop.core.domain.entity.Merchandise;
 import com.capstone.shop.core.domain.repository.merchandise.MerchandiseSpec;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebPostMerchandiseResponse;
+import com.capstone.shop.core.domain.dto.CreateApiResponse;
 import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
 import com.capstone.shop.user.v1.search.Filter;
 
@@ -71,19 +71,19 @@ public class UserWebMerchandiseServiceImpl implements UserWebMerchandiseService 
     }
 
     @Override
-    public UserWebPostMerchandiseResponse createMerchandise(UserWebMerchandiseRegister request, Long id) {
+    public CreateApiResponse createMerchandise(UserWebMerchandiseRegister request, Long id) {
         // 추후 현재 로그인한 유저를 가져와야 함.
         User user = User.builder().id(id).build();
 
         Optional<Category> categoryOp = categoryRepository.findById(Long.valueOf(request.getCategoryId()));
         if (categoryOp.isEmpty())
-            return new UserWebPostMerchandiseResponse(false, 0);
+            return new CreateApiResponse(false, "상품 등록 : 카테고리가 존재하지 않음");
 
         Category category = categoryOp.get();
         Merchandise entity = request.toEntity(category, user);
 
         entity = merchandiseRepository.save(entity);
-        return new UserWebPostMerchandiseResponse(true, entity.getId());
+        return new CreateApiResponse(true, "상품 등록 : 성공", entity.getId());
     }
 
     @Override

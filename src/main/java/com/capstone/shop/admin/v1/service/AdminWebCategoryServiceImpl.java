@@ -4,14 +4,12 @@ import com.capstone.shop.admin.v1.controller.dto.CategoryRequestDto;
 import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.CategoryResponseDto;
 import com.capstone.shop.admin.v1.controller.dto.CategoryResponseDtos.CategoryTreeResponseDto;
 import com.capstone.shop.core.domain.dto.ApiResponse;
+import com.capstone.shop.core.domain.dto.CreateApiResponse;
 import com.capstone.shop.core.domain.entity.Category;
 import com.capstone.shop.core.domain.entity.User;
 import com.capstone.shop.core.domain.repository.CategoryRepository;
 import com.capstone.shop.core.domain.repository.UserRepository;
-import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,62 +24,56 @@ public class AdminWebCategoryServiceImpl implements AdminWebCategoryService {
 
     @Override
     @Transactional
-    public ApiResponse createCategory(Long userId, CategoryRequestDto categoryRequestDto) {
+    public CreateApiResponse createCategory(Long userId, CategoryRequestDto categoryRequestDto) {
         Category parentCategory = null;
         Long parentId = categoryRequestDto.getParentId();
-        String title = categoryRequestDto.getTitle();
 
         // 부모 카테고리 찾기
-        if (parentId != null) {
-            parentCategory = categoryRepository.findById(parentId)
-                    .orElseThrow(() -> new IllegalArgumentException("부모 카테고리가 존재하지 않습니다: " + parentId));
+        if (parentId != null && parentId > 0) {
+            parentCategory = categoryRepository.findById(parentId).orElse(null);
+            if (parentCategory == null) {
+                return new CreateApiResponse(false, "카테고리 생성 : 전달된 부모 카테고리가 존재하지 않습니다.");
+            }
         }
 
-        // 제목 중복 검사
-        if (categoryRepository.existsByTitle(title)) {
-            throw new IllegalArgumentException("이미 존재하는 카테고리 제목입니다: " + title);
+        // 생성한 유저 찾기
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return new CreateApiResponse(false, "카테고리 생성 : 현재 로그인된 관리 정보를 찾을수 없습니다.");
         }
 
-        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("no user"));
-
-        Category category = Category.builder()
-                .title(title)
-                .parent(parentCategory)
-                .isLeaf(categoryRequestDto.isLeaf())
-                .sequence(categoryRequestDto.getSequence())
-                .register(user)
-                .build();
-
-        categoryRepository.save(category);
-        return new ApiResponse(true, "카테고리 생성 성공");
+        Category category = categoryRepository.save(categoryRequestDto.toEntity(parentCategory, user));
+        return new CreateApiResponse(true, "카테고리 생성 : 성공", category.getId());
     }
 
     @Override
     @Transactional
     public ApiResponse updateCategory(Long userId, CategoryRequestDto categoryRequestDto, Long id) {
         // 기존 카테고리 찾기
-        Category existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("수정할 카테고리를 찾을 수 없습니다: " + categoryRequestDto.getTitle()));
+        Category existingCategory = categoryRepository.findById(id).orElse(null);
+        if (existingCategory == null) {
+            return new ApiResponse(false, "카테고리 수정 : 수정할 카테고리가 존재하지 않습니다.");
+        }
 
-        // 부모 카테고리 처리
+        // 부모 카테고리 찾기
         Category parentCategory = null;
-        if (categoryRequestDto.getParentId() != null) {
-            parentCategory = categoryRepository.findById(categoryRequestDto.getParentId())
-                    .orElseThrow(() -> new IllegalArgumentException("부모 카테고리가 존재하지 않습니다: " + categoryRequestDto.getParentId()));
+        Long parentId = categoryRequestDto.getParentId();
+        if (parentId != null && parentId > 0) {
+            parentCategory = categoryRepository.findById(parentId).orElse(null);
+            if (parentCategory == null) {
+                return new ApiResponse(false, "카테고리 수정 : 전달된 부모 카테고리가 존재하지 않습니다.");
+            }
         }
 
         // 작성자 확인
-        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("no user"));
-
-        // 카테고리 정보 업데이트
-        existingCategory.changeParentCategory(parentCategory);
-        existingCategory.updateIsLeaf(categoryRequestDto.isLeaf());
-        existingCategory.updateSequence(categoryRequestDto.getSequence());
-        existingCategory.changeRegister(user);
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return new ApiResponse(false, "카테고리 수정 : 현재 로그인된 관리자 정보를 찾을수 없습니다.");
+        }
 
         // 카테고리 업데이트 후 저장
-        categoryRepository.save(existingCategory);
-        return new ApiResponse(true, "카테고리 수정 성공");
+        categoryRepository.save(categoryRequestDto.toEntity(parentCategory, user, id));
+        return new ApiResponse(true, "카테고리 수정 : 성공");
     }
 
     @Override
