@@ -25,4 +25,5 @@ public interface ChatService {
     MessageResponse markMessageAsRead(Long messageId);
 //
 //    List<ChatR>
+    boolean isUserInRoom(Long userId, Long roomId);
 }
