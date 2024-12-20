@@ -105,6 +105,6 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public boolean isUserInRoom(Long userId, Long roomId) {
         User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("유저가 없습니다"));
-        return chatRoomRepository.existsByIdAndUsersContains(roomId, user);
+        return chatRoomRepository.existsByIdAndUser(roomId, user);
     }
 }

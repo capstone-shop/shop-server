@@ -16,6 +16,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     List<ChatRoom> findBySellerOrBuyer(User seller, User buyer);
 
-    boolean existsByIdAndUsersContains(Long roomId, User user);
-
+    @Query("SELECT COUNT(c) > 0 FROM ChatRoom c WHERE c.id = :roomId AND (c.seller = :user OR c.buyer = :user)")
+    boolean existsByIdAndUser(@Param("roomId") Long roomId, @Param("user") User user);
 }
