@@ -1,85 +1,72 @@
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.4'
-	id 'io.spring.dependency-management' version '1.1.6'
-}
+subprojects {
+	group = 'com.capstone'
+	version = '0.0.1-SNAPSHOT'
 
-group = 'com.capstone'
-version = '0.0.1-SNAPSHOT'
+	apply plugin: 'java'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(17)
+		}
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		// Lombok
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+
+		// Testing
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+		testImplementation 'org.springframework.security:spring-security-test'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+//https://docs.gradle.org/current/userguide/more_about_tasks.html
+def copyResourcesToAdminModule = tasks.register('copyResourcesToAdminModule', Copy) {
+	from('resources')
+	into('module-admin/src/main/resources')
+}
+def copyResourcesToUserModule = tasks.register('copyResourcesToUserModule', Copy) {
+	from('resources')
+	into('module-user/src/main/resources')
+}
+def copyResourcesToCoreModule = tasks.register('copyResourcesToCoreModule', Copy) {
+	from('resources')
+	into('module-core/src/main/resources')
+}
+
+project(':module-admin') {
+	dependencies {
+		implementation project(':module-core')
+	}
+
+	tasks.named('processResources').configure {
+		dependsOn(copyResourcesToAdminModule)
 	}
 }
 
-repositories {
-	mavenCentral()
+project(':module-user') {
+	dependencies {
+		implementation project(':module-core')
+	}
+
+	tasks.named('processResources').configure {
+		dependsOn(copyResourcesToUserModule)
+	}
 }
 
-dependencies {
-	// Security
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-	// Web Application
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	// Validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
-	// Database
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-	// QueryDSL
-	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
-	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-	implementation 'org.springframework:spring-context'
-
-	// Swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
-
-	// SMTP
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-	// WebSocket
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	// Testing
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	// MySQL Driver
-	runtimeOnly 'com.mysql:mysql-connector-j'
-
-	// H2 for testing
-	runtimeOnly 'com.h2database:h2'
+project(':module-core') {
+	tasks.named('processResources').configure {
+		dependsOn(copyResourcesToCoreModule)
+	}
 }
 
-jar {
-	enabled = false
-	destinationDirectory = file("./build/libs")
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}

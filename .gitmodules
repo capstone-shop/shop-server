@@ -1,3 +1,3 @@
 [submodule "src/main/resources/settings"]
-	path = src/main/resources/settings
+	path = resources/settings
 	url = https://github.com/capstone-shop/shop-server-settings.git
