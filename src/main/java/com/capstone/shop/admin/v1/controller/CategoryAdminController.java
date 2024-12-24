@@ -56,10 +56,10 @@ public class CategoryAdminController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{title}")
+    @GetMapping("/{id}")
     @Operation(summary = "카테고리 조회", description = "카테고리 제목으로 카테고리를 조회합니다.")
-    public ResponseEntity<CategoryResponseDto> getCategoryByTitle(@PathVariable String title) {
-        CategoryResponseDto response = categoryService.getCategoryByTitle(title);
+    public ResponseEntity<CategoryResponseDto> getCategoryByTitle(@PathVariable Long id) {
+        CategoryResponseDto response = categoryService.getCategory(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

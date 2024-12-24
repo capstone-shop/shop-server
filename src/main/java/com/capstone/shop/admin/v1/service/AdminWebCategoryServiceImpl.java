@@ -94,9 +94,9 @@ public class AdminWebCategoryServiceImpl implements AdminWebCategoryService {
     }
 
     @Transactional(readOnly = true)
-    public CategoryResponseDto getCategoryByTitle(String categoryTitle) {
-        Category category = categoryRepository.findByTitle(categoryTitle)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다: " + categoryTitle));
+    public CategoryResponseDto getCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다: " + id));
 
         return new CategoryResponseDto(category);
     }

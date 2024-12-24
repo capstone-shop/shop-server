@@ -16,7 +16,7 @@ public interface AdminWebCategoryService {
 
     ApiResponse deleteCategory(Long id);
 
-    CategoryResponseDto getCategoryByTitle(String categoryTitle);
+    CategoryResponseDto getCategory(Long id);
 
     List<CategoryResponseDto> getAllCategories();
 
