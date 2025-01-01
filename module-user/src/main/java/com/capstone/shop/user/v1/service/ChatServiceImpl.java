@@ -98,4 +98,10 @@ public class ChatServiceImpl implements ChatService {
 
         return MessageResponse.fromEntity(updatedMessage);
     }
+
+    @Override
+    public boolean isUserInRoom(Long userId, Long roomId) {
+        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("유저가 없습니다"));
+        return chatRoomRepository.existsByIdAndUser(roomId, user);
+    }
 }

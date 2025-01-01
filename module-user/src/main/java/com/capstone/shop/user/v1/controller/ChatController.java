@@ -45,14 +45,20 @@ public class ChatController {
         return ResponseEntity.ok(chatRooms);
     }
     @GetMapping("/{roomId}")
-    public List<MessageResponse> getChatHistory(@PathVariable Long roomId) {
+    public List<MessageResponse> getChatHistory(@PathVariable Long roomId, @CurrentUser UserPrincipal userPrincipal) {
+        if (!chatService.isUserInRoom(userPrincipal.getId(), roomId)) {
+            throw new IllegalArgumentException("이 채팅방에 접근할 권한이 없습니다.");
+        }
         return chatService.getChatHistory(roomId);
     }
     //채팅보내기
     // 채팅방 입장 후 메시지 보내기
     @MessageMapping("/sendMessage/{roomId}")
     @SendTo("/topic/messages/{roomId}")
-    public MessageResponse sendMessage(@DestinationVariable Long roomId, MessageResponse message) {
+    public MessageResponse sendMessage(@DestinationVariable Long roomId, MessageResponse message, @CurrentUser UserPrincipal userPrincipal) {
+        if (!chatService.isUserInRoom(userPrincipal.getId(), roomId)) {
+            throw new IllegalArgumentException("이 채팅방에 접근할 권한이 없습니다.");
+        }
         return chatService.saveMessage(message, roomId);
     }
     @MessageMapping("/markAsRead")
@@ -60,5 +66,7 @@ public class ChatController {
     public MessageResponse markAsRead(Long messageId) {
         return chatService.markMessageAsRead(messageId);
     }
+
+
 
 }
