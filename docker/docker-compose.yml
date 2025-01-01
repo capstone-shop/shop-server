@@ -1,11 +1,11 @@
 services:
   user:
-    image: "${registry}/user-image"
+    image: "${registry}/user-image:latest"
     ports:
       - 8081:8081
     container_name: user-container
   admin:
-    image: "${registry}/admin-image"
+    image: "${registry}/admin-image:latest"
     ports:
       - 8080:8080
     container_name: admin-container
