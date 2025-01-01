@@ -9,7 +9,7 @@ jobs:
   build:
     # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#running-your-pull_request_target-workflow-when-a-pull-request-merges
     # pull_request 가 승인된 상황에만 아래를 실행하기 위해, github.event.pull_request.merged 가 true 인지 체크.
-    #if: (github.event.pull_request.merged)
+    if: (github.event.pull_request.merged)
 
     runs-on: ubuntu-latest
     permissions:
@@ -41,7 +41,7 @@ jobs:
         with:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
