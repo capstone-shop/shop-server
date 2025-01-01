@@ -1,17 +1,15 @@
 name: CD AWS
 
 on: # 아래의 조건을 만족할때 실행
-  push: # distribute 태그를 달고 push 되었을때
-    tags:
-      - distribute
   pull_request_target: # pull_request 가 승인되었을때
     types:
       - closed
 
 jobs:
   build:
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#running-your-pull_request_target-workflow-when-a-pull-request-merges
     # pull_request 가 승인된 상황에만 아래를 실행하기 위해, github.event.pull_request.merged 가 true 인지 체크.
-    if: (github.event.pull_request.merged || (github.event_name == 'push'))
+    #if: (github.event.pull_request.merged)
 
     runs-on: ubuntu-latest
     permissions:
@@ -19,51 +17,42 @@ jobs:
       packages: write
 
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
       - name: Checkout server
         uses: actions/checkout@v4
-        with:
-          ref: 'master'
 
       - name: Checkout submodule
         uses: actions/checkout@v4
         with:
           token: '${{ secrets.SUBMODULE_PAT }}'
           repository: 'capstone-shop/${{ secrets.SUBMODULE_REPOSITORY_NAME }}'
-          path: src/main/resources/settings
+          path: resources/settings
 
-        # 테스트를 생략하고 빌드함.
-        # 빌드 속도를 높이기 위해 캐시를 사용함.
-        # 캐시를 암호화시키기 위해 key 값 사용.
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          gradle-version: 8.10
-          cache-encryption-key: ${{ secrets.GradleEncryptionKey }}
-      - run: gradle build --configuration-cache -x test
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
         # Dockerfile 파일에 써진 내용을 바탕으로, 서버가 실행중인 상태의 도커 이미지를 build 함.
-      - run: docker build -t shop-server .
+        #- run: docker build -t shop-server .
+      - run: docker build . --platform linux/amd64 --file docker/Dockerfile-user --tag ${{ secrets.DOCKER_REGISTRY }}/user-image:latest
+      - run: docker build . --platform linux/amd64 --file docker/Dockerfile-admin --tag ${{ secrets.DOCKER_REGISTRY }}/admin-image:latest
 
-        # docker hub 에 로그인하고, build 된 이미지를 push 함.
+        # docker registry 에 로그인
+      - run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+        # build 된 이미지를 push 함.
         # docker push 명령어는, 전에 업로드한 이미지에서 변경된 레이어만 업로드하므로 빠름.
-      - run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      - run: docker tag shop-server ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
-      - run: docker push ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
+      - run: docker push ${{ secrets.DOCKER_REGISTRY }}/admin-image:latest
+      - run: docker push ${{ secrets.DOCKER_REGISTRY }}/user-image:latest
 
         # 서버에 ssh 로 접속해서
-        # 1. 서버가 이미 실행중인지 확인
-        # 2. 실행중이면 해당 도커 id 찾아서 종료
-        # 3. 예전 도커 이미지 삭제함 (삭제 안하면 순식간에 ssd 부족해짐)
-        # 4. docker pull 하고 nohup 으로 실행 (~/shop-server.log 경로에 서버 로그 + 에러 출력을 남김)
-        # docker pull 명령어는, 전에 다운로드한 이미지와 달라진 레이어만 다운로드하므로 속도가 빠름.
-        # nohup 명령어 역할은 hup(부모 프로세스 종료 신호) 전파를 막아서, ssh 쉘이 종료되도 자식 프로세스를 계속 실행시키는 역할임.
-        # "nohup (백그라운드 실행할 명령어) > (생성할/덮어쓸 로그파일 경로) 2>&1 &" 처럼 사용함
+        # 0. docker-compose.yml 파일이 있는 위치로 이동하고
+        # 1. 서버 끄고
+        # 2. 서버 실행
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -71,15 +60,6 @@ jobs:
           username: ${{ secrets.EC2_SSH_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            CONTAINER_ID=$(sudo docker ps -q --filter "ancestor=${{ secrets.DOCKER_USERNAME }}/shop-server")
-            
-            if [ ! -z "$CONTAINER_ID" ]; then
-              sudo docker stop $CONTAINER_ID
-              sudo docker rm $CONTAINER_ID
-            fi
-            
-            sudo docker system prune
-            sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/shop-server
-            
-            docker pull ${{ secrets.DOCKER_USERNAME }}/shop-server:latest
-            nohup docker run -p 8080:8080 -e TZ=Asia/Seoul --network host ${{ secrets.DOCKER_USERNAME }}/shop-server:latest > shop-server.log 2>&1 &
+            cd backend
+            docker-compose down
+            docker-compose up -d

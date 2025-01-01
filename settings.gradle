@@ -1,1 +1,5 @@
 rootProject.name = 'shop-server'
+include 'module-admin'
+include 'module-user'
+include 'module-core'
+
