@@ -49,15 +49,17 @@ jobs:
       - name: Admin Image Build and push
         uses: docker/build-push-action@v6
         with:
+          context: 'docker/'
           push: true
-          file: 'docker/Dockerfile-admin'
+          file: 'Dockerfile-admin'
           tags: ${{ secrets.DOCKER_REGISTRY }}/admin-image:latest
 
       - name: User Image Build and push
         uses: docker/build-push-action@v6
         with:
+          context: 'docker/'
           push: true
-          file: 'docker/Dockerfile-user'
+          file: 'Dockerfile-user'
           tags: ${{ secrets.DOCKER_REGISTRY }}/user-image:latest
 
         # 서버에 ssh 로 접속해서
