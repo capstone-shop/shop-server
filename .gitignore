@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### subprojects ###
+module-admin/src/main/resources/**
+module-user/src/main/resources/**
+module-core/src/main/resources/**
+
+### ci/cd ###
+.act/
+docker/.env
