@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @RequiredArgsConstructor
@@ -39,6 +40,10 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final UserRepository userRepository;
+    @Bean
+    public WebClient webClient(WebClient.Builder builder) {
+        return builder.baseUrl("http://api.induk.shop:8000/").build(); // FastAPI 서버 URL
+    }
     @Bean
     public PreuserRedirectFilter preuserRedirectFilter() {
         return new PreuserRedirectFilter(userRepository);
@@ -75,6 +80,7 @@ public class SecurityConfig {
                                 "/signin",
                                 "/api/v1/merchandise/*",
                                 "/signup",
+                                "/predict",
                                 "/favicon.ico",
                                 "/oauth2/authorize",
                                 "/oauth2/authorization/*",

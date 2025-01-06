@@ -1,12 +1,11 @@
 package com.capstone.shop.user.v1.controller;
 
+import com.capstone.shop.core.exception.AdvertiseNotAllowedException;
 import com.capstone.shop.core.security.CurrentUser;
 import com.capstone.shop.core.security.UserPrincipal;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseDetail;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandisePagination;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebMerchandiseRegister;
+import com.capstone.shop.user.v1.controller.dto.merchandise.*;
 import com.capstone.shop.core.domain.dto.CreateApiResponse;
-import com.capstone.shop.user.v1.controller.dto.merchandise.UserWebWish;
+import com.capstone.shop.user.v1.service.FastApiService;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
 import com.capstone.shop.user.v1.search.Filter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @Tag(name = "UserWebMerchandiseController", description = "유저 상품 관련 컨트롤러")
 public class UserWebMerchandiseController {
     private final UserWebMerchandiseService userWebMerchandiseService;
+    private final FastApiService fastApiService;
 
     @GetMapping
     public UserWebMerchandisePagination getMerchandise(
@@ -62,9 +62,18 @@ public class UserWebMerchandiseController {
     }))
     public CreateApiResponse createMerchandise(@RequestBody UserWebMerchandiseRegister request,
             @CurrentUser UserPrincipal userPrincipal) {
+        boolean isAdvertise = fastApiService.getPrediction(request.getName()).equalsIgnoreCase("Advertise");
+        if (isAdvertise) {
+            throw new AdvertiseNotAllowedException("상품명을 다시 입력하세요 광고상품이 감지되었습니다.");
+        }
         return userWebMerchandiseService.createMerchandise(request, userPrincipal.getId());
     }
-
+//    @PostMapping("/predict")  << restTemplate 말고 webClient를 이용함
+//    @RequestMapping(value = "/predict", method = RequestMethod.POST)  // 이것만 RequestMapping 적용 안함
+//    public Boolean isAdvertise(@RequestBody UserWebMerchandiseTitlePredictRequest request) {
+//        String prediction = fastApiService.getPrediction(request.getTitle());
+//        return "Advertise".equalsIgnoreCase(prediction);
+//    }
     @DeleteMapping("/{merchandiseId}")
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "상품 삭제 api")
