@@ -7,7 +7,7 @@ import com.capstone.shop.user.v1.controller.dto.merchandise.*;
 import com.capstone.shop.core.domain.dto.CreateApiResponse;
 import com.capstone.shop.user.v1.service.FastApiService;
 import com.capstone.shop.user.v1.service.UserWebMerchandiseService;
-import com.capstone.shop.user.v1.search.Filter;
+import com.capstone.shop.core.util.search.Filter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
